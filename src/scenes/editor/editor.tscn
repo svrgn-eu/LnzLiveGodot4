@@ -298,6 +298,7 @@ offset_bottom = 32.0
 
 [node name="Popup" type="Window" parent="SceneRoot" unique_id=1234973362]
 oversampling_override = 1.0
+visible = false
 
 [node name="RichTextLabel" type="RichTextLabel" parent="SceneRoot/Popup" unique_id=1525168699]
 anchors_preset = 15
@@ -383,7 +384,7 @@ item_8/id = 8
 
 [node name="ColorPopup" type="Popup" parent="SceneRoot" unique_id=2024061809]
 oversampling_override = 1.0
-visible = true
+visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SceneRoot/ColorPopup" unique_id=1508753882]
 offset_right = 40.0
@@ -400,7 +401,7 @@ size_flags_horizontal = 3
 [node name="RecolorPopup" type="ConfirmationDialog" parent="SceneRoot" unique_id=576615572]
 oversampling_override = 1.0
 size = Vector2i(463, 438)
-visible = true
+visible = false
 dialog_text = "Note: always excludes eyes, tongue and nose
 "
 
@@ -475,7 +476,7 @@ text = "Lines"
 [node name="HeadMovePopup" type="Popup" parent="SceneRoot" unique_id=1429915971]
 oversampling_override = 1.0
 size = Vector2i(100, 101)
-visible = true
+visible = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SceneRoot/HeadMovePopup" unique_id=406125595]
 offset_right = 40.0
