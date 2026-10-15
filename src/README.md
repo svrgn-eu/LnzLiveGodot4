@@ -1,19 +1,13 @@
-# LnzLive
+# LnzLive (Godot 4 Desktop Application)
 
 ![screenshot](screenshot.png)
 
-[Edit and preview LNZ files in your browser!](https://mnemoli.github.io/LnzLive/export/index.html)
-
-**Currently limited to desktop browsers.**
+Interactive desktop 3D previewer and editor for **Petz** `.lnz` files, built with **Godot 4**.
 
 ## Instructions
 
-See the [usage guide](GUIDE.md).
+See the root [README](../README.md) for project setup and architecture, and the [Usage Guide](GUIDE.md) for editor controls and tools.
 
-## Limitations
+## Status
 
-Some browsers have security restrictions that won't let you paste into the LNZ text box. Chrome-based browsers are more likely to work. [Download the EXE](https://github.com/mnemoli/LnzLive/releases) instead if you're having trouble.
-
-This app is in development. Expect crashes and visual bugs.
-
-If you would like to help with development, raise [an issue](https://github.com/mnemoli/LnzLive/issues) (as long as it's not covered above) or a pull request.
+This desktop application is in active development. If you encounter bugs or would like to contribute, please raise [an issue](https://github.com/svrgn-eu/LnzLiveGodot4/issues) or open a pull request.

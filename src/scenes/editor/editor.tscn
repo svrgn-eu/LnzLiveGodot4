@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://b26787sk7myd4" path="res://scenes/editor/unhandled_input_handler.gd" id="9"]
 [ext_resource type="Script" uid="uid://bhad556u08nv7" path="res://scenes/editor/ToolsMenu.gd" id="10"]
 [ext_resource type="PackedScene" path="res://data_classes/RecolorLine.tscn" id="11"]
+[ext_resource type="Script" path="res://scenes/editor/AnimPicker.gd" id="12"]
 
 [sub_resource type="BoxMesh" id="1"]
 
@@ -202,9 +203,11 @@ mouse_filter = 2
 layout_mode = 2
 mouse_filter = 0
 
-[node name="AnimPicker" type="LineEdit" parent="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer" unique_id=106443411]
+[node name="AnimPicker" type="OptionButton" parent="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer" unique_id=106443411]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 mouse_filter = 1
+script = ExtResource("12")
 
 [node name="FrameSlider" type="HSlider" parent="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer" unique_id=1338971272]
 layout_mode = 2
@@ -319,9 +322,9 @@ Click and drag in the centre screen to rotate the pet. Use the mouse wheel to zo
 
 Edit the LNZ file in the right-hand text box. Hit Ctrl+S to save your changes and refresh the pet render.
 
-When you save, the edited LNZ will be stored in your browser's local storage.
+When you save, the edited LNZ will be stored in your local user data directory.
 
-If you want to load your own pet, extract the LNZ using LNZ Pro, paste into the text box and save. Only pet files are fully supported; breed files may not display correctly. Pasting requires browser permission to access your clipboard. No data is sent anywhere; all files and data are processed client-side in your browser.
+If you want to load your own pet, extract the LNZ using LNZ Pro, paste into the text box and save. Only pet files are fully supported; breed files may not display correctly.
 
 To view animations, type an animation number in the box at the top and hit enter. There are roughly 500 animations per species.
 
@@ -493,6 +496,7 @@ layout_mode = 2
 
 [connection signal="addball_deleted" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/TextPanelContainer/LnzTextEdit" method="_on_Node_addball_deleted"]
 [connection signal="animation_loaded" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/FrameSlider" method="_on_animation_loaded"]
+[connection signal="bhd_loaded" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/AnimPicker" method="_on_bhd_loaded"]
 [connection signal="ball_mouse_enter" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer" method="_on_Node_ball_mouse_enter"]
 [connection signal="ball_selected" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/TextPanelContainer/LnzTextEdit" method="_on_Node_ball_selected"]
 [connection signal="ball_translation_changed" from="PetRoot/Node" to="SceneRoot/HSplitContainer/HSplitContainer/TextPanelContainer/LnzTextEdit" method="_on_Node_ball_translation_changed"]
@@ -507,7 +511,7 @@ layout_mode = 2
 [connection signal="id_pressed" from="SceneRoot/HSplitContainer/VBoxContainer/Tree/ItemPopupMenu" to="SceneRoot/HSplitContainer/VBoxContainer/Tree" method="_on_ItemPopupMenu_id_pressed"]
 [connection signal="resized" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer" method="_on_PetViewContainer_resized"]
 [connection signal="sort_children" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer" method="_on_PetViewContainer_sort_children"]
-[connection signal="text_submitted" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/AnimPicker" to="PetRoot/Node" method="_on_AnimPicker_text_entered"]
+[connection signal="item_selected" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/AnimPicker" to="PetRoot/Node" method="_on_AnimPicker_item_selected"]
 [connection signal="value_changed" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/FrameSlider" to="PetRoot/Node" method="set_frame"]
 [connection signal="toggled" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/Button" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/Button" method="_on_Button_toggled"]
 [connection signal="timeout" from="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/Button/Timer" to="SceneRoot/HSplitContainer/HSplitContainer/PetViewContainer/VBoxContainer/HBoxContainer/FrameSlider" method="_on_Timer_timeout"]

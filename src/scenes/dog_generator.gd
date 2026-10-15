@@ -58,24 +58,22 @@ func set_frame(frame: int):
 func init_ball_data(species):
 	if species == KeyBallsData.Species.DOG:
 		bhd = BhdParser.new("res://resources/animations/DOG.bhd")
-		emit_signal("bhd_loaded", bhd.animation_ranges.size())
-		var first_anim_frames = bhd.get_frame_offsets_for(current_animation)
-		var bdt = BdtParser.new("DOG"+str(current_animation)+".bdt", first_anim_frames, bhd.num_balls)
-		emit_signal("animation_loaded", first_anim_frames.size())
-		current_bdt = bdt
-		
-		for n in bhd.num_balls:
-			balls.append(BallData.new(bhd.ball_sizes[n], bdt.frames[current_frame][n].position, n, bdt.frames[current_frame][n].rotation))
 	else:
 		bhd = BhdParser.new("res://resources/animations/CAT.bhd")
-		emit_signal("bhd_loaded", bhd.animation_ranges.size())
-		var first_anim_frames = bhd.get_frame_offsets_for(current_animation)
-		var bdt = BdtParser.new("CAT"+str(current_animation)+".bdt", first_anim_frames, bhd.num_balls)
-		emit_signal("animation_loaded", first_anim_frames.size())
-		current_bdt = bdt
-		
-		for n in bhd.num_balls:
-			balls.append(BallData.new(bhd.ball_sizes[n], bdt.frames[current_frame][n].position, n, bdt.frames[current_frame][n].rotation))
+	if current_animation >= bhd.animation_ranges.size():
+		current_animation = 0
+		current_frame = 0
+	emit_signal("bhd_loaded", bhd.animation_ranges.size())
+	var first_anim_frames = bhd.get_frame_offsets_for(current_animation)
+	if current_frame >= first_anim_frames.size():
+		current_frame = 0
+	var bdt_prefix = "DOG" if species == KeyBallsData.Species.DOG else "CAT"
+	var bdt = BdtParser.new(bdt_prefix + str(current_animation) + ".bdt", first_anim_frames, bhd.num_balls)
+	emit_signal("animation_loaded", first_anim_frames.size())
+	current_bdt = bdt
+	
+	for n in bhd.num_balls:
+		balls.append(BallData.new(bhd.ball_sizes[n], bdt.frames[current_frame][n].position, n, bdt.frames[current_frame][n].rotation))
 
 	KeyBallsData.max_base_ball_num = bhd.num_balls
 
@@ -564,10 +562,14 @@ func _on_OptionButton_file_selected(file_name):
 func _on_OptionButton_file_saved(file_name):
 	generate_pet(file_name)
 	
+func _on_AnimPicker_item_selected(index: int):
+	if bhd != null and index >= 0 and index < bhd.animation_ranges.size():
+		set_animation(index)
+
 func _on_AnimPicker_text_entered(new_text):
 	var i = int(new_text)
-	if i < bhd.animation_ranges.size():
-		set_animation(int(new_text))
+	if bhd != null and i >= 0 and i < bhd.animation_ranges.size():
+		set_animation(i)
 
 func _on_BallCheckBox_toggled(button_pressed):
 	draw_balls = button_pressed
