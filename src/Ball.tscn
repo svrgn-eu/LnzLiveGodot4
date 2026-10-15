@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://shaders/ball.tres" type="Material" id=1]
+[ext_resource path="res://scripts/Ball.gd" type="Script" id=2]
+
+[sub_resource type="QuadMesh" id=1]
+
+[sub_resource type="SphereShape3D" id=2]
+resource_local_to_scene = true
+margin = 0.0001
+radius = 0.01
+
+[node name="Ball" type="Node3D"]
+script = ExtResource( 2 )
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
+material_override = ExtResource( 1 )
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="Area3D" type="Area3D" parent="."]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource( 2 )
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.2
+
+[connection signal="input_event" from="Area3D" to="." method="_on_Area_input_event"]
+[connection signal="mouse_entered" from="Area3D" to="." method="_on_Area_mouse_entered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="_on_Area_mouse_exited"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_FlashTimer_timeout"]
