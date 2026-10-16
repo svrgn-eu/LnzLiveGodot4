@@ -3,7 +3,7 @@
 While `.lnz` files define a pet's breed customizations (sizes, colors, addballs, lines, paintballs), the underlying **67-ball skeletal hierarchy, default ball diameters, and per-frame animation transforms** are stored in two paired binary formats extracted from the original *Petz* game data:
 
 1. **`.bhd` (Ball Header)**: Master index file per species (`DOG.bhd`, `CAT.bhd`) containing default base ball sizes, animation frame counts, and byte offset tables.
-2. **`.bdt` (Ball Data)**: Per-animation binary files (`DOG0.bdt`–`DOG444.bdt`, `CAT0.bdt`–`CAT462.bdt`) containing 3D positions and Euler rotations for every base ball across every frame of that animation.
+2. **`.bdt` (Ball Data)**: Per-animation binary files (`DOG0.bdt`–`DOG444.bdt`, `CAT0.bdt`–`CAT492.bdt`) containing 3D positions and Euler rotations for every base ball across every frame of that animation.
 
 All multi-byte integers in both formats are **little-endian**.
 
@@ -22,8 +22,8 @@ Located in `src/resources/animations/DOG.bhd` and `src/resources/animations/CAT.
 | `0x06` | `uint16` | `num_balls` | Number of base skeletal balls for this species (`67` for both Dog and Cat). |
 | `0x08` | `uint8[30]` | *(reserved)* | 30 bytes of header metadata (skipped via `file.seek(file.get_position() + 30)`). |
 | `0x26` | `uint16[num_balls]` | `ball_sizes` | Array of `num_balls` unsigned 16-bit integers defining the default unscaled pixel diameter for each base ball (`0` to `num_balls - 1`). |
-| `0x26 + 2 * num_balls` | `uint16` | `animation_count` | Total number of animations defined for this species (`445` in `DOG.bhd`, `463` in `CAT.bhd`). |
-| Next `2 * animation_count` bytes | `uint16[animation_count]` | `anim_end_indices` | Cumulative frame count table. Entry `i` stores the exclusive ending frame index `end` for animation `i`. |
+| `0x26 + 2 * num_balls` | `uint16` | `animation_count` | Total number of animations defined for this species (`445` in `DOG.bhd`, `493` in `CAT.bhd`). |
+| Next `2 * animation_count` bytes | `uint16[animation_count]` | `anim_end_indices` | Cumulative frame count table. Entry `i` stores the exclusive ending frame index `end` for animation `i` (up to `16,036` total frames across animations `0`–`492` in `CAT.bhd`). |
 | `frames_offset` | `uint32[]` | `frame_file_offsets` | Contiguous array of 32-bit unsigned byte offsets pointing into the corresponding `<SPECIES><anim_index>.bdt` file. |
 
 ### 1.2 Resolving Animation Ranges & Frame Offsets
@@ -42,11 +42,14 @@ When [`BhdParser.get_frame_offsets_for(index)`](../../src/data_classes/bhd_parse
 2. It reads `num_of_offsets` consecutive `uint32` values.
 3. Each `uint32` value is the exact byte offset of that frame inside `<SPECIES><index>.bdt` (e.g., `DOG0.bdt` or `CAT12.bdt`).
 
+> [!NOTE]
+> **Catz Animation Catalog (`0`–`492`)**: A complete human-readable index of all 493 Catz animations—including animation ID, hex ID (`0000`–`01EC`), frame count, cumulative `First` and `Last` frame indices (`0`–`16035`), loop flag, and behavior description—is available in [`Catz-Animations-Catalog.md`](Catz-Animations-Catalog.md). Note that `Catz-Animations-Catalog.md` lists inclusive `First` and `Last` frame indices (e.g., Anim `0`: `First = 0`, `Last = 20`), whereas `CAT.bhd` stores the exclusive upper bound `end = Last + 1` (`21`, giving `21 - 0 = 21` frame offsets).
+
 ---
 
 ## 2. `.bdt` Format Specification ([`BdtParser`](../../src/data_classes/bdt_parser.gd))
 
-Located in `src/resources/animations/<SPECIES><anim_index>.bdt` (e.g., `DOG0.bdt` through `DOG444.bdt` and `CAT0.bdt` through `CAT462.bdt`).
+Located in `src/resources/animations/<SPECIES><anim_index>.bdt` (e.g., `DOG0.bdt` through `DOG444.bdt` and `CAT0.bdt` through `CAT492.bdt`).
 
 ### 2.1 Frame Binary Structure
 

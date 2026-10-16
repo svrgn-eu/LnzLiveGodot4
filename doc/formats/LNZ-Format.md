@@ -9,10 +9,11 @@ This document specifies the exact structure and semantics of `.lnz` files as par
 ## 1. General Syntax Rules
 
 1. **Section Headers**: Sections begin with a bracketed header on its own line, e.g., `[Ballz Info]`, `[Add Ball]`, `[Linez]`.
-2. **Comments**: Lines beginning with `;` or `#` (after indentation removal) are treated as comments and ignored during parsing.
-   - **Special Breed Variant Marker (`#2`)**: In breed `.lnz` files that contain multiple coat/gender variations, a line beginning with `#2` marks the start of a secondary variation block. `LnzParser` stops reading the current section when it encounters `#2` so only the primary variation is loaded.
+2. **Comments & Breed Variation Markers**: Lines beginning with `;` or `#` (after indentation removal) are treated as comments and ignored during parsing.
+   - **Breed Variation Blocks (`#N`, `#2`, `#1`, `##`)**: In breed `.lnz` files (such as [`src/resources/cinn.lnz`](../../src/resources/cinn.lnz), [`chichi.lnz`](../../src/resources/chichi.lnz), or raw `.cat`/`.dog` breed resources like `B+W Shorthair/BW`), coat, marking, and clothing variations are grouped using `#` directives and closed with `##`.
+   - **Current `LnzParser` `#2` Termination Rule & Caveat**: `LnzParser` stops reading the current section when it encounters a line beginning with `#2` (`line.begins_with("#2")`). In files where `#1` precedes `#2` (e.g., `cinn.lnz`), this loads variation `#1` and skips `#2`. However, in raw breed files where `#2` is used as the outer header declaring a 2-variation block before `#1` (e.g., `#2;face streak` followed by `#1` in the original *B&W Shorthair* `BW` resource), breaking on `#2` stops parsing `[Paint Ballz]` early and omits the subsequent `#1` markings (such as the B&W Shorthair face streak and chest patch). Adopted/dumped pet `.lnz` files (e.g., [`src/resources/pouncer.lnz`](../../src/resources/pouncer.lnz)) have their variation blocks already flattened by the game and load all markings cleanly.
 3. **Section Termination**: A section ends when the parser encounters an empty line, the start of a new `[Section]`, `#2`, or End-Of-File (EOF).
-4. **Value Delimiters**: Numeric fields on a line may be separated by spaces, tabs, or commas. `LnzParser` extracts numeric tokens using the regular expression `[-\.\d]+` (and whitespace-delimited tokens in `[Texture List]` using `[\S]+`).
+4. **Value Delimiters**: Numeric fields on a line may be separated by spaces, tabs, or commas. `LnzParser` extracts numeric tokens using the regular expression `[-\.\d]+` (and whitespace-delimited tokens in `[Texture List]` using `[\S]+`). Extra trailing columns or inline comments (e.g., `eBall_ankleL,` or `; 0`) are ignored once the expected column keys for a section have been read.
 
 ---
 
@@ -24,12 +25,12 @@ Defines which base skeleton and animation set to use.
 [Species]
 2
 ```
-| Value | Species | Base Skeleton & Animations | Base Ball Count |
-| :--- | :--- | :--- | :--- |
-| `1` | Cat (`KeyBallsData.Species.CAT`) | `CAT.bhd` / `CAT0.bdt`–`CAT462.bdt` | 67 (`0`–`66`) |
-| `2` | Dog (`KeyBallsData.Species.DOG`) | `DOG.bhd` / `DOG0.bdt`–`DOG444.bdt` | 67 (`0`–`66`) |
+| `.lnz` `[Species]` Value | `.pet` Binary `Load Info` Value | Species | Base Skeleton & Animations | Base Ball Count |
+| :--- | :--- | :--- | :--- | :--- |
+| `1` | `0` | Cat (`KeyBallsData.Species.CAT`) | `CAT.bhd` / `CAT0.bdt`–`CAT492.bdt` (493 animations) | 67 (`0`–`66`) |
+| `2` | `1` | Dog (`KeyBallsData.Species.DOG`) | `DOG.bhd` / `DOG0.bdt`–`DOG444.bdt` (445 animations) | 67 (`0`–`66`) |
 
-*(Defaults to `2` if omitted.)*
+*(Defaults to `2` in `LnzParser` if omitted. Note that in binary `.pet` files, the `Load Info` header encodes `Species` as `0 = Catz` and `1 = Dogz`, whereas the embedded `.lnz` text section uses `1 = Catz` and `2 = Dogz`; see [`PET-Format.md`](PET-Format.md#L93-L98).)*
 
 ---
 
@@ -121,10 +122,14 @@ Each section takes two integers on separate lines: a percentage multiplier and a
 Lists ball or addball numbers (one per line) that should be hidden (along with any `[Linez]` or `[Paint Ballz]` attached to them).
 ```ini
 [Omissions]
-43
-44
-45
+37
+65
+66
+67
+68
 ```
+> [!NOTE]
+> In standard Catz `.lnz` files (see [`catz_base.lnz`](../../src/resources/catz_base.lnz#L151-L164)), `[Omissions]` routinely hides base ball `37` (`eBall_nose`, replaced by nose addballs `77`–`79`), orientation/translation base balls `65` (`eBall_zorient`) and `66` (`eBall_ztrans`), and utility alignment addballs `67`–`76` (*"utility addballz for Andrew"* used for mounting, toy stealing, digging, and pillow alignment), so visible breed addballs begin at index **`77`**.
 
 ---
 
@@ -156,7 +161,7 @@ Defines appearance overrides and size adjustments for the **67 base skeletal bal
 ---
 
 ### `[Add Ball]`
-Defines additional spheres parented to existing base balls (`0`–`66`). Addballs are assigned sequential ball numbers starting immediately after the last base ball (`67`, `68`, `69`, …).
+Defines additional spheres parented to existing base balls (`0`–`66`). Addballs are assigned sequential ball numbers starting immediately after the last base ball (`67`, `68`, `69`, …). In binary `.pet` files, up to `512` total balls (`67` base + `445` addballs) are supported (see [`PET-Format.md`](PET-Format.md#L405-L444)).
 
 ```ini
 [Add Ball]
@@ -180,6 +185,7 @@ Defines additional spheres parented to existing base balls (`0`–`66`). Addball
 | 12 | `body_area` | `int` | Anatomical region tag. |
 | 13 | `add_group` | `int` | Secondary group ID. |
 | 14 | `texture` | `int` | Index into `[Texture List]` (`-1` = untextured). |
+| 15 *(optional)* | *(extra)* | `int` | Present in dumped `.pet` `.lnz` files (e.g., `-1` in `pouncer.lnz`); ignored by `LnzParser`. |
 
 ---
 
@@ -238,6 +244,7 @@ Defines tapered connecting lines (limbs, torso segments, ears, tail) between pai
 | 6 | `r_color` | `int` | Right-edge 1px outline palette index (`-1` = no right outline / inherit `start` color). |
 | 7 | `start_thickness` | `int` | Thickness at `start` ball as a percentage of `start.ball_size` (`100` = $100\%$). |
 | 8 | `end_thickness` | `int` | Thickness at `end` ball as a percentage of `end.ball_size` (`100` = $100\%$). |
+| 9–10 *(optional)* | *(extra)* | `int` | Present in dumped `.pet` `.lnz` files (e.g., `0 0` or `-1 0` in `pouncer.lnz`); ignored by `LnzParser`. |
 
 ---
 
@@ -262,5 +269,29 @@ Defines circular decals (spots, patches, muzzle markings) anchored to the surfac
 | 8 | `fuzz` | `int` | Edge fuzziness (`clamp(fuzz / 2, 0, 5)`). |
 | 9 | `outline` | `int` | Outline mode (`-1` = none, `0`, `-2`, `1`, `>= 2`). |
 | 10 | *(group)* | `int` | Skipped/unused group token (`split_line[9]`). |
-| 11 | `texture` | `int` | Index into `[Texture List]` (`-1` = untextured). |
+| 11 | `texture` | `int` | Index into `[Texture List]` (`-1` = untextured) when `[Lnz Version] 2` is used. *(In legacy `.lnz` files without `[Lnz Version] 2`, the original game interprets this value as a base ball ID whose texture is copied; see [Petz Wiki: LNZ](https://petz.miraheze.org/wiki/LNZ).)* |
 | 12 *(optional)* | `anchored` | `int` | Optional anchor flag (`0` or `1`). |
+
+---
+
+## 4. `.lnz` File Archetypes & Additional Petz Sections
+
+As documented in the [Petz Wiki LNZ Specification](https://petz.miraheze.org/wiki/LNZ) and [`PET-Format.md`](PET-Format.md), `.lnz` data in the *Petz* ecosystem exists in four distinct forms:
+
+1. **Species Master `.lnz` (`CATMASTER.lnz` / `DOGMASTER.lnz`)**:
+   - Extracted from `Catz 5 Rez.dll` / `Dogz 5 Rez.dll`.
+   - Defines only species-level defaults (`[Species]`, `[Eyes]`, `[Key Balls]`, `[Whiskers]`, `[Z Shade Slope]`, `[Head Rotation Limits]`, `[Head Tilt Limits]`, `[Num Ballz]`, and base paw-pad `[Fur Markings]`). Contains **no** `[Ballz Info]`, `[Add Ball]`, or `[Linez]`—it cannot be rendered standalone without a breed `.lnz`.
+2. **Adult Breed `.lnz` (e.g., `BW` inside `B+W Shorthair.cat` or [`cinn.lnz`](../../src/resources/cinn.lnz))**:
+   - References `[Default Linez File] \ptzfiles\cat\catmaster.lnz` and `[Little one] bwkit.lnz`, defines full `[Ballz Info]`, `[Add Ball]`, `[Linez]`, and `[Paint Ballz]`, and uses `#N` / `#2` / `#1` / `##` variation blocks for randomized Adoption Center traits.
+3. **Puppy / Kitten `.lnz` (e.g., `BWKIT` inside `B+W Shorthair.cat`)**:
+   - References the adult breed file in `[Default Linez File]` (`\ptzfiles\cat\bw\bw.lnz`) and overrides only juvenile proportions (`[Default Scales]`, `[Head/Feet Enlargement]`, `[Body/Leg/Face/Ear Extension]`, `[Project Ball]`, `[Ball Size Override]`, and `[Fuzz Override]`).
+4. **Adopted Pet / Dumped `.lnz` (e.g., [`pouncer.lnz`](../../src/resources/pouncer.lnz) or embedded `.pet` `LNZ Info`)**:
+   - Self-contained `.lnz` files (see [`PET-Format.md`](PET-Format.md)) where master defaults, breed definitions, and random-seed variation blocks have already been merged and flattened into concrete `[Ballz Info]`, `[Add Ball]`, `[Linez]`, and `[Paint Ballz]` tables.
+
+### Unparsed Engine & Breeding Sections Reference
+The following `.lnz` sections appear in original *Petz* files for in-game audio, breeding genetics, weight biorhythms, and clothing, and are safely ignored by `LnzParser`:
+- **Inheritance & Metadata**: `[Default Linez File]`, `[Little One]`, `[Sounds]`, `[Breed Name]`, `[Lnz Version]`, `[Num Ballz]`, `[Head Shot]` (Pick-A-Pet portrait pose; frame numbers $> 492$ crash original *Catz*), `[256 Eyelid Color]`.
+- **Skeletal & Rendering Hints**: `[Eyes]`, `[Key Balls]`, `[Whiskers]`, `[Default Linez Thickness]`, `[Z Shade Slope]`, `[Default Glue Ball]`, `[Circle Render Mode]`, `[Line Render Mode]`, `[Draw Linez Before Ballz]`, `[Draw Small Balls]`, `[Head Rotation Limits]`, `[Head Tilt Limits]`.
+- **Variations, Biorhythms & Genetics**: `[Thin/Fat]` (ball size deltas at min/max fullness/fatness), `[Ball Size Override]`, `[Color Info Override]`, `[Outline Color Override]`, `[Fuzz Override]`, `[Fur Color Areas]`, `[Fur Markings]`, `[Fur Pattern Balls]`, `[Marking Factor]`, `[Spot Factor]`, `[Force To Female]`, `[Force To Male]`.
+- **Clothing**: `[Add Clothing]`, `[Adjust Clothing]`, `[Flat Clothing]`.
+

@@ -1,6 +1,0 @@
-res://default_env.tres
-res://shaders/line.tres
-res://scenes/editor/editor.tscn
-res://GUIDE.md
-res://scenes/dog_generator.gd
-res://scenes/editor/FrameSlider.gd

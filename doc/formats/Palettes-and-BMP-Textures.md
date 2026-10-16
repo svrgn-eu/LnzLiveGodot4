@@ -14,25 +14,35 @@ Located at `src/resources/textures/petzpalette.png`, the master palette is a **$
 To sample exact texel centers without bilinear bleeding, the shaders use `filter_nearest, repeat_disable` and sample at:
 $$u = \frac{\text{float}(\text{palette\_index}) + 0.5}{256.0}, \quad v = 0.0$$
 
-### 1.2 10-Shade Color Ramps (`0`–`149`) vs. Fixed Colors (`150`–`255`)
-In the standard Petz palette, indices `0` through `149` are organized into **15 contiguous color ramps of 10 shades each**, typically ordered from lightest (`base + 0`) to darkest (`base + 9`):
+### 1.2 10-Shade Color Ramps (`10`–`149`) vs. Fixed & Accent Colors (`0`–`9`, `150`–`255`)
+As validated against `src/resources/textures/petzpalette.png`, [`Petz_Workshop_Color_Chart.png`](Petz_Workshop_Color_Chart.png), [`Petz-Color-Palette.md`](Petz-Color-Palette.md), and the [Petz Wiki LNZ Specification](https://petz.miraheze.org/wiki/LNZ), the 256 palette entries are organized into four functional regions:
 
-| Index Range | Typical Petz Color Ramp |
-| :--- | :--- |
-| `0`–`9` | White / Light Grey |
-| `10`–`19` | Black / Charcoal |
-| `20`–`29` | Mid Grey |
-| `30`–`39` | Cream / Blonde |
-| `40`–`49` | Orange / Ginger |
-| `50`–`59` | Red / Rust |
-| `60`–`69` | Brown / Chocolate |
-| `70`–`79` | Tan / Fawn |
-| `80`–`89` | Dusty Brown / Umber |
-| `90`–`99` | Blue-Grey / Russian Blue |
-| `100`–`149` | Additional Accent / Clothing / Eye Ramps |
-| `150`–`255` | Non-shifting utility, UI, and accent colors |
+1. **Indices `0`–`9`: Fixed System / Utility Colors** (not a 10-shade fur ramp).
+2. **Indices `10`–`149`: 14 Texturable 10-Shade Coat & Eye Color Ramps**, ordered from lightest (`base + 0`) to darkest (`base + 9`).
+3. **Indices `150`–`199`: Extended 10-Color Accent Blocks** (non-shifting in LnzLive shaders since `color_index >= 150`).
+4. **Indices `200`–`255`: Fixed Utility, Sclera, Outline, and System Colors** (non-shifting).
 
-Because indices `< 150` are arranged in blocks of 10:
+| Index Range | Validated Petz 4/5 Color Ramp / Role | Representative Indices & Hex ([`Petz-Color-Palette.md`](Petz-Color-Palette.md)) |
+| :--- | :--- | :--- |
+| `0`–`9` | **Fixed System / Utility Colors** *(non-ramp)* | `0` White (`#FFFFFF`), `1` Dark Red (`#8A0A0A`), `2` Green (`#0A8A0A`), `6` Aqua (`#0A8A8A`), `7` Silver (`#CACACA`), `9` Black (`#0A0A0A`) |
+| `10`–`19` | **White** (10-shade ramp) | `10` (`#F1ECE7`) $\rightarrow$ `15` White (`#DDD8D1`) $\rightarrow$ `19` (`#CDC8C0`) |
+| `20`–`29` | **Gray** (10-shade ramp) | `20` (`#7F7F7F`) $\rightarrow$ `25` Gray (`#656565`) $\rightarrow$ `29` (`#505050`) |
+| `30`–`39` | **Black / Charcoal** (10-shade ramp) | `30` (`#4C4C4C`) $\rightarrow$ `35` Black (`#272727`) $\rightarrow$ `39` (`#0A0A0A`) |
+| `40`–`49` | **Cream / Tan** (10-shade ramp) | `40` (`#E6CCA0`) $\rightarrow$ `45` Cream (`#C5AC84`), `47` Paw Pad Tan (`#B8A079`) $\rightarrow$ `49` (`#AC936D`) |
+| `50`–`59` | **Cherry / Reddish-Brown** (10-shade ramp) | `50` (`#914B2C`) $\rightarrow$ `55` (`#6B3722`) $\rightarrow$ `59` (`#4C271A`) |
+| `60`–`69` | **Ginger / Orange** (10-shade ramp) | `60` (`#BE7D20`) $\rightarrow$ `65` (`#A66213`) $\rightarrow$ `69` (`#934E0A`) |
+| `70`–`79` | **Pink** (10-shade ramp, tongue & paw pads) | `70` (`#FAA8C1`) $\rightarrow$ `75` Pink (`#DA92A8`), `77` (`#CD8A9E`) $\rightarrow$ `79` (`#C18195`) |
+| `80`–`89` | **Red / Rust** (10-shade ramp) | `80` (`#B2330B`) $\rightarrow$ `85` (`#9C2E0B`) $\rightarrow$ `89` (`#8B2A0B`) |
+| `90`–`99` | **Brown / Chocolate** (10-shade ramp) | `90` (`#755416`) $\rightarrow$ `95` (`#5B3714`) $\rightarrow$ `99` (`#462013`) |
+| `100`–`109` | **Sandy / Gold** (10-shade ramp) | `100` (`#B09442`) $\rightarrow$ `105` (`#9D7E40`) $\rightarrow$ `109` (`#8E6C3F`) |
+| `110`–`119` | **Steel / Blue-Grey** (10-shade ramp) | `110` (`#6C7A87`) $\rightarrow$ `115` (`#535A67`) $\rightarrow$ `119` (`#40424D`) |
+| `120`–`129` | **Dusty / Taupe** (10-shade ramp) | `120` (`#A4987D`) $\rightarrow$ `125` (`#938870`) $\rightarrow$ `129` (`#867B65`) |
+| `130`–`139` | **Green** (10-shade eye/accent ramp) | `130` (`#5FB561`) $\rightarrow$ `135` (`#1A8323`) $\rightarrow$ `139` (`#1A4B1B`) |
+| `140`–`149` | **Royal Blue / Indigo** (10-shade eye/accent ramp) | `140` (`#356BCD`) $\rightarrow$ `145` (`#3846C0`) $\rightarrow$ `149` (`#1B235D`) |
+| `150`–`199` | **Non-Shifting Accent / Eye Blocks** (`150` Sky Blue, `160` Yellow/Olive, `170` Pale Blue, `180` Mauve, `190` Teal) | `150` (`#E2FAFF`), `163` (`#FFFE0A`), `171` (`#CAEEF1`), `180` (`#ECC8B6`), `190` (`#7CA896`) |
+| `200`–`255` | **Non-Shifting Utility, Sclera & Outline Colors** | `201` Eye Sclera (`#FEFFE2`), `244` Standard Black Outline (`#0A0A0A`), `248` Unallocated Ball Sentinel (`#8A8A8A`) |
+
+Because the texturable coat/eye ramps (`10`–`149`) are arranged in blocks of 10:
 - The **ramp base index** of any color `color_index` is:
   $$\text{modded\_color} = \text{color\_index} - (\text{color\_index} \bmod 10)$$
 - The **shade offset** within a ramp (`0` to `9`) of any sampled texture pixel `palette_index` is:

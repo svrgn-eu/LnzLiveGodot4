@@ -7,7 +7,7 @@ Replace (or augment) the current free-text `AnimPicker` (`LineEdit`) in the top 
 - **Goal 1:** Allow users to discover and switch between available `.bhd`/`.bdt` animations directly from a dropdown menu in the 3D pet view toolbar.
 - **Goal 2:** Prevent out-of-range or non-numeric input errors by constraining selection to valid animation indices for the currently loaded species (`CAT` or `DOG`).
 - **Use Case A:** A user loads an example or custom `.lnz` pet and wants to preview how their ball/line/paintball edits look across different poses and animations by clicking the dropdown and picking an animation.
-- **Use Case B:** A user switches from a Dogz `.lnz` file (445 animations) to a Catz `.lnz` file (463 animations) and the dropdown automatically updates its list of available animations to match the loaded species.
+- **Use Case B:** A user switches from a Dogz `.lnz` file (445 animations) to a Catz `.lnz` file (493 animations) and the dropdown automatically updates its list of available animations to match the loaded species.
 
 ## 👥 Target Audience / User Roles
 - **Petz Hexers / Breed Creators:** Users editing `.lnz` files in LnzLive who need to inspect pet proportions, ball placements, and line connections across multiple animations and frames.

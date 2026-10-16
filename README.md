@@ -6,9 +6,25 @@ A native desktop fork of [mnemoli/LnzLive](https://github.com/mnemoli/LnzLive) �
 
 ---
 
-## Overview
+## Overview & Program Intention
 
-**LnzLive** is a native desktop application (`v1.0.0`) that lets you load, inspect, edit, and preview Petz `.lnz` breed and pet files in real time. It accurately emulates the classic PF.Magic 2.5D/3D "Ballz & Linez" rendering pipeline—complete with ballz, addballz, tapered linez, surface-clipped paintballz, 256-color palette shifting, 8-bit indexed `.bmp` textures, and `.bhd`/`.bdt` skeletal animation playback.
+**LnzLive** is a native desktop application (`v1.0.0`) built with **Godot 4** designed to parse, preview, animate, and edit **Petz** (`Catz` and `Dogz` by PF.Magic / Studio Mythos) `.lnz` character definition files in real time.
+
+### Why LnzLive Exists
+In the original 1990s/2000s *Petz* games, pets are not rendered using traditional 3D polygon meshes. Instead, they use a unique procedural 2.5D/3D rendering technique built from:
+- **Ballz**: Screen-aligned 2D circles positioned in 3D space via skeletal animation frames.
+- **Addballz**: Additional spheres parented to base skeletal balls to create custom anatomy, accessories, and breed details.
+- **Linez**: Tapered 2D trapezoids/cones connecting pairs of balls to form limbs, torsos, tails, and ears.
+- **Paintballz**: Decals (spots, patches, stripes, irises) projected onto the surface of a parent ball and clipped to its silhouette.
+
+Historically, "hexers" (Petz modders and breed creators) had to edit `.lnz` text files in external tools (such as *LNZ Pro*), save them into binary `.pet` or `.cat`/`.dog` DLL resource files, launch the legacy Windows game, and wait for the pet to perform specific animations just to see how a single coordinate or color change looked.
+
+**LnzLive solves this** by providing:
+1. **Instant Live Previewing**: Edit `.lnz` code in a side-by-side text editor and press `Ctrl+S` to immediately regenerate the 3D pet in the viewport.
+2. **Interactive 3D Inspection**: Rotate, pan, and zoom around the pet in 3D from any angle—even angles impossible to see in the original 2D-projected game—and scrub or play through all skeletal animations frame-by-frame (`445` Dogz animations and `493` Catz animations).
+3. **Visual Picking & Navigation**: Hover or double-click directly on balls/addballs in the 3D viewport to jump straight to their corresponding `[Ballz Info]`, `[Add Ball]`, `[Move]`, `[Project Ball]`, or `[Linez]` definitions in the `.lnz` file (or press `Ctrl+Q` on a line of text to flash the ball in 3D).
+4. **Automated Hexing Utilities**: Built-in tools for symmetrical mirroring (**Copy L to R**), batch recoloring (**Color Swap** and body-part recoloring), adding connected addballs, and moving head assemblies.
+5. **Foundation for a Godot 4 Desktop Pet Engine**: By accurately implementing the Petz `.lnz`, `.bhd`, `.bdt`, and palette-indexed `.bmp` rendering pipeline in Godot 4, this project serves both as a standalone editor and as the core rendering engine for a modern Desktop Pet application.
 
 ### Key Achievements in This Fork
 
@@ -25,21 +41,44 @@ A native desktop fork of [mnemoli/LnzLive](https://github.com/mnemoli/LnzLive) �
 
 ---
 
-## Technical Documentation
+## Technical Documentation (`doc/`)
 
-Detailed documentation on the program's purpose, internal rendering pipeline, and Petz file formats is located in [`doc/`](doc/README.md):
+Comprehensive documentation on the program's internal architecture, 3D rendering pipeline, Petz file formats, architectural decision records (ADRs), and feature specifications is located in [`doc/`](doc/):
 
-- **[Documentation Index & Program Overview (`doc/README.md`)](doc/README.md)**
-- **[System Architecture & 3D Rendering Pipeline (`doc/Architecture-and-Rendering.md`)](doc/Architecture-and-Rendering.md)** — Scene hierarchy, the 7-stage pet generation pipeline, and custom spatial shader math.
-- **File Format Specifications (`doc/formats/`)**:
-  - **[Petz `.lnz` Text Format Specification](doc/formats/LNZ-Format.md)** — Section-by-section syntax and field reference (`[Ballz Info]`, `[Add Ball]`, `[Linez]`, `[Paint Ballz]`, `[Move]`, `[Project Ball]`, extensions, and scales).
-  - **[Petz `.bhd` & `.bdt` Binary Animation Formats](doc/formats/BHD-and-BDT-Formats.md)** — Byte-level layout of skeletal headers, frame offset tables, and signed binary frame transforms.
-  - **[Petz 256-Color Palette & 8-Bit Indexed `.bmp` Textures](doc/formats/Palettes-and-BMP-Textures.md)** — `petzpalette.png` 10-shade color ramps, Z-depth shading, `transparent_color` modes, and custom 8bpp `.bmp` index loading.
+### Architecture & Rendering
+- [**System Architecture & 3D Rendering Pipeline (`doc/Architecture-and-Rendering.md`)**](doc/Architecture-and-Rendering.md)
+  - Complete walkthrough of the application architecture, the 7-stage pet generation pipeline in [`dog_generator.gd`](src/scenes/dog_generator.gd), and the custom Godot 4 spatial shaders ([`ball.tres`](src/shaders/ball.tres), [`paintball.tres`](src/shaders/paintball.tres), [`line.tres`](src/shaders/line.tres)).
+
+### File Format Specifications (`doc/formats/`)
+- [**Petz `.lnz` Text Format Specification (`doc/formats/LNZ-Format.md`)**](doc/formats/LNZ-Format.md)
+  - Detailed syntax and field-by-field reference for every section parsed and modified by LnzLive (`[Species]`, `[Texture List]`, `[Default Scales]`, `[Leg/Body/Face/Ear Extension]`, `[Head/Feet Enlargement]`, `[Omissions]`, `[Ballz Info]`, `[Add Ball]`, `[Move]`, `[Project Ball]`, `[Linez]`, and `[Paint Ballz]`), plus `.lnz` file archetypes (Master, Breed, Kitten/Puppy, and Dumped Pet) and `#2`/`#1`/`##` variation blocks.
+- [**Petz `.bhd` & `.bdt` Binary Animation Formats (`doc/formats/BHD-and-BDT-Formats.md`)**](doc/formats/BHD-and-BDT-Formats.md)
+  - Byte-level specification of the binary skeletal header (`.bhd`) and frame transform data (`.bdt`) files (`445` Dogz and `493` Catz animations), including endianness, offset tables, signed integer decoding, and coordinate space conversion.
+- [**Catz Skeletal Animations Catalog (`0`–`492`) (`doc/formats/Catz-Animations-Catalog.md`)**](doc/formats/Catz-Animations-Catalog.md)
+  - Complete index of all 493 Catz animations (`CAT0.bdt`–`CAT492.bdt`), including frame counts, cumulative `First` and `Last` frame indices (`0`–`16035`), loop flags, and behavior descriptions.
+- [**Petz 256-Color Palette & 8-Bit Indexed `.bmp` Textures (`doc/formats/Palettes-and-BMP-Textures.md`)**](doc/formats/Palettes-and-BMP-Textures.md)
+  - In-depth guide to `petzpalette.png`, the 14 texturable 10-shade color ramps (`10`–`149`), Z-depth palette shifting, `transparent_color` modes, and the custom 8-bit uncompressed `.bmp` index loader ([`petz_texture_loader.gd`](src/data_classes/petz_texture_loader.gd)).
+- [**Petz 4/5 Exact 256-Color Palette (`doc/formats/Petz-Color-Palette.md`)**](doc/formats/Petz-Color-Palette.md) & [**Workshop Color Chart (`doc/formats/Petz_Workshop_Color_Chart.png`)**](doc/formats/Petz_Workshop_Color_Chart.png)
+  - Complete 256-entry (`0`–`255`) hex color lookup table and visual $16 \times 16$ index chart.
+- [**Petz `.pet` Binary File Format v3 Specification (`doc/formats/PET-Format.md`)**](doc/formats/PET-Format.md)
+  - Reverse-engineered specification of P.F. Magic `.pet` files (Load Info, Checksums, Saved Color Info, Embedded LNZ, Veterinary History, Genome Chromosomes/Alleles, Ancestry, and Thumbnail Bitmap).
+
+### Project Governance & Planning
 - **Architecture Decision Records (`doc/adr/`)**:
-  - **[ADR-0001: Target Native Desktop Application Scope Instead of Web Browser Export](doc/adr/0001-desktop-application-scope.md)**
+  - [ADR-0001: Target Native Desktop Application Scope Instead of Web Browser Export](doc/adr/0001-desktop-application-scope.md)
+  - [ADR Template (`doc/adr/_ADR_Template.md`)](doc/adr/_ADR_Template.md)
 - **Feature Specifications (`doc/features/`)**:
-  - Implemented: **[Animation Selection Dropdown](doc/features/implemented/Animation-Selection-Dropdown.md)**
-  - In Review: **[GDScript to C# (.NET) Migration](doc/features/review/GDScript-to-CSharp-Migration.md)**
+  - Implemented:
+    - [Animation Selection Dropdown](doc/features/implemented/Animation-Selection-Dropdown.md)
+  - In Review:
+    - [Animation Linked Lists & Sequencer Window](doc/features/review/Animation-Linked-Lists-and-Sequencer.md)
+    - [CI/CD Pipelines (GitHub Actions & GitLab CI) with FGVM](doc/features/review/CI-CD-GitHub-Actions-and-GitLab-Pipelines.md)
+    - [GDScript to C# (.NET) Migration](doc/features/review/GDScript-to-CSharp-Migration.md)
+    - [Godot Project Directory Reorganization & Standardization](doc/features/review/Godot-Project-Directory-Reorganization.md)
+    - [Modern UI Overhaul & Theme System](doc/features/review/Modern-UI-Overhaul-and-Theme-System.md)
+  - [Feature Template (`doc/features/_Feature_Template.md`)](doc/features/_Feature_Template.md)
+- **Bug Reports (`doc/bugs/`)**:
+  - [Bug Report Template (`doc/bugs/_Bug_Template.md`)](doc/bugs/_Bug_Template.md)
 
 ---
 
@@ -47,7 +86,6 @@ Detailed documentation on the program's purpose, internal rendering pipeline, an
 
 ```text
 ├── doc/                                  # Project documentation, format specs, ADRs, and features
-│   ├── README.md                         # Documentation index & program intention
 │   ├── Architecture-and-Rendering.md     # 7-stage generation pipeline & shader documentation
 │   ├── adr/                              # Architecture Decision Records
 │   │   ├── _ADR_Template.md
@@ -62,13 +100,21 @@ Detailed documentation on the program's purpose, internal rendering pipeline, an
 │   │   │   └── Animation-Selection-Dropdown.md
 │   │   ├── ongoing/
 │   │   ├── review/
-│   │   │   └── GDScript-to-CSharp-Migration.md
+│   │   │   ├── Animation-Linked-Lists-and-Sequencer.md
+│   │   │   ├── CI-CD-GitHub-Actions-and-GitLab-Pipelines.md
+│   │   │   ├── GDScript-to-CSharp-Migration.md
+│   │   │   ├── Godot-Project-Directory-Reorganization.md
+│   │   │   └── Modern-UI-Overhaul-and-Theme-System.md
 │   │   ├── reviewed/
 │   │   └── working_on/
-│   └── formats/                          # Detailed Petz file format specifications
+│   └── formats/                          # Detailed Petz file format specifications & references
 │       ├── BHD-and-BDT-Formats.md
+│       ├── Catz-Animations-Catalog.md
 │       ├── LNZ-Format.md
-│       └── Palettes-and-BMP-Textures.md
+│       ├── PET-Format.md
+│       ├── Palettes-and-BMP-Textures.md
+│       ├── Petz-Color-Palette.md
+│       └── Petz_Workshop_Color_Chart.png
 ├── src/                                  # Godot 4 project root (v1.0.0)
 │   ├── data_classes/                     # Parsers (.lnz, .bhd, .bdt, .bmp) and data models
 │   ├── resources/                        # Example .lnz pets, .bhd/.bdt animations, palettes, and .bmp textures
@@ -81,7 +127,7 @@ Detailed documentation on the program's purpose, internal rendering pipeline, an
 │   ├── GUIDE.md                          # User guide for editor controls and hexing tools
 │   ├── README.md                         # Godot project directory README
 │   └── project.godot                     # Godot 4 engine configuration
-└── README.md
+└── README.md                             # Project root README & documentation index
 ```
 
 ---
@@ -115,5 +161,6 @@ For full user instructions on editing `.lnz` files, keyboard shortcuts, local us
 ## Credits & References
 
 - **Original Project**: [mnemoli/LnzLive](https://github.com/mnemoli/LnzLive) by [mnemoli](https://github.com/mnemoli)
-- **Wiki & Documentation**: [LnzLive on Petz Wiki](https://petz.miraheze.org/wiki/LnzLive)
+- **Wiki & Documentation**: [LnzLive on Petz Wiki](https://petz.miraheze.org/wiki/LnzLive), [Petz Wiki: LNZ](https://petz.miraheze.org/wiki/LNZ), [Petz Wiki: Ballz](https://petz.miraheze.org/wiki/Ballz), [Petz Wiki: Hexing](https://petz.miraheze.org/wiki/Hexing)
+- **Format & Animation References**: [Reflet's `.pet` File Format Breakdown](https://petzforum.proboards.com/thread/71837/full-breakdown-pet-file-format), [Secret Petz Catz Animations](https://secretpetz.neocities.org/Petz%20animations/cat), [Carolyn's Creations / Fantazzled](https://oasis.fantazzled.com/)
 - **Shader & Line Drawing Reference**: [Ratshack Godot Line Drawing Notes](https://ratshack.neocities.org/text/godot/linedrawing)
