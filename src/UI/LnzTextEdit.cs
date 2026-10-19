@@ -12,7 +12,7 @@ using PetzRendering.Services;
 
 namespace PetzRendering.UI;
 
-public partial class LnzTextEdit : TextEdit
+public partial class LnzTextEdit : CodeEdit
 {
 	private sealed class MirroredBallEntry
 	{
@@ -48,6 +48,19 @@ public partial class LnzTextEdit : TextEdit
 	public override void _Ready()
 	{
 		WrapMode = LineWrappingMode.None;
+		GuttersDrawLineNumbers = true;
+
+		var highlighter = new CodeHighlighter
+		{
+			NumberColor = new Color(0.82f, 0.60f, 0.40f, 1.0f),
+			SymbolColor = new Color(0.545f, 0.58f, 0.62f, 1.0f),
+			FunctionColor = new Color(0.902f, 0.929f, 0.953f, 1.0f),
+			MemberVariableColor = new Color(0.902f, 0.929f, 0.953f, 1.0f)
+		};
+		highlighter.AddColorRegion("[", "]", new Color(0.302f, 0.616f, 0.878f, 1.0f), lineOnly: true);
+		highlighter.AddColorRegion(";", "", new Color(0.545f, 0.58f, 0.62f, 1.0f), lineOnly: true);
+		highlighter.AddColorRegion("#", "", new Color(0.545f, 0.58f, 0.62f, 1.0f), lineOnly: true);
+		SyntaxHighlighter = highlighter;
 	}
 
 	public void OnExampleFileSelected(string filepath)

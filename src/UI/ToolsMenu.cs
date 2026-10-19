@@ -142,6 +142,8 @@ public partial class ToolsMenu : PopupMenu
 			var godotBallNos = new Godot.Collections.Array<int>(coreBallNos);
 			EmitSignal(SignalName.ColorPartPet, godotBallNos, baseColor, outlineColor, part);
 		}
+
+		parent.GetNodeOrNull<Popup>("ColorPopup")?.Hide();
 	}
 
 	public void OnRecolorMenuIdPressed(long id)
@@ -261,5 +263,6 @@ public partial class ToolsMenu : PopupMenu
 		_ = int.TryParse(zText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var z);
 
 		EmitSignal(SignalName.MoveHead, x, y, z);
+		GetParent().GetNodeOrNull<Popup>("HeadMovePopup")?.Hide();
 	}
 }

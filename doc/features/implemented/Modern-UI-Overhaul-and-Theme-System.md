@@ -53,28 +53,28 @@ Instead of attaching `theme_override_styles/*` or `theme_override_fonts/*` direc
 ---
 
 ## ⚙️ Functional Requirements
-- [ ] **Requirement 1 (Centralized Godot 4 `Theme` Resource):**
+- [x] **Requirement 1 (Centralized Godot 4 `Theme` Resource):**
   - Create a single static Godot `Theme` file at `src/resources/themes/editor_theme.tres`.
   - Define flat `StyleBoxFlat` resources, font references (`DroidSans.ttf` / clean monospace fallback), colors, and margin constants for all controls used in the project:
     - `PanelContainer`, `Button`, `CheckBox`, `OptionButton`, `LineEdit`, `CodeEdit` / `TextEdit`, `Tree`, `HSlider`, `HSplitContainer`, `PopupMenu`, `Window`, `AcceptDialog`, and `ConfirmationDialog`.
   - Configure `gui/theme/custom="res://resources/themes/editor_theme.tres"` in [`src/project.godot`](../../../src/project.godot) and set `theme = ExtResource(...)` on `SceneRoot` in [`src/Scenes/Editor/Editor.tscn`](../../../src/Scenes/Editor/Editor.tscn) so the entire application and all popups inherit the theme automatically both in-editor and at runtime.
-- [ ] **Requirement 2 (Eliminate Inline Theme Overrides in `Editor.tscn`):**
+- [x] **Requirement 2 (Eliminate Inline Theme Overrides in `Editor.tscn`):**
   - Remove the redundant inline sub-resources from [`src/Scenes/Editor/Editor.tscn`](../../../src/Scenes/Editor/Editor.tscn):
     - Delete `SubResource("2")` (`StyleBoxEmpty` on `PetViewContainer`) and replace it with `theme_type_variation = &"ViewportContainerPanel"`.
     - Delete duplicate `FontFile` sub-resources `SubResource("3")`, `SubResource("4")`, and `SubResource("5")` on `SceneRoot/Label` and `SceneRoot/Popup/RichTextLabel`, relying instead on the default font and `RichTextLabel` font table configured in `editor_theme.tres`.
-- [ ] **Requirement 3 (Flat, Timeless 3D Viewport Backdrop):**
+- [x] **Requirement 3 (Flat, Timeless 3D Viewport Backdrop):**
   - Update `SceneRoot/ColorRect.color` in [`src/Scenes/Editor/Editor.tscn`](../../../src/Scenes/Editor/Editor.tscn) from `Color(0, 0.5, 0.5, 1)` (`#008080`) to a flat neutral studio slate (`Color(0.157, 0.173, 0.204, 1)` / `#282C34`).
   - Keep the backdrop strictly flat—no gradients, vignettes, shaders, or color picker controls.
-- [ ] **Requirement 4 (Structured 3D Viewport Top & Bottom Bars):**
+- [x] **Requirement 4 (Structured 3D Viewport Top & Bottom Bars):**
   - Wrap the top control row (`HBoxContainer`) and bottom visibility row (`HBoxContainer2`) inside `PetViewContainer/VBoxContainer` in `PanelContainer` nodes using `theme_type_variation = &"ViewportToolbarPanel"`, separated by an expanding transparent spacer (`Control` with `size_flags_vertical = SIZE_EXPAND_FILL`, `mouse_filter = MOUSE_FILTER_IGNORE`) so the top bar sits cleanly at the top and the visibility/selection bar sits cleanly at the bottom of the 3D viewport:
     - **Top Animation & Transport Bar:**
       - `AnimPicker` (`OptionButton`), `PlayButton` (`Button` with toggle state), `FrameSlider` (`HSlider`), `FPSLabel` (`Label`), plus a **`Tools`** button (opening `ToolsMenu`) and a **`?`** button (wired to the existing `PetViewContainer.OnHelpButtonPressed()` method).
     - **Bottom Render Filter & Selection Bar:**
       - `BallCheckBox` (`Draw balls`), `AddballCheckBox` (`Draw addballs`), `PaintballCheckBox` (`Draw paintballs`), `LineCheckBox` (`Draw lines`), and `SelectCheckBox` (`Select`).
-- [ ] **Requirement 5 (Upgraded LNZ Code Editor):**
+- [x] **Requirement 5 (Upgraded LNZ Code Editor):**
   - Change `LnzTextEdit` node type in [`src/Scenes/Editor/Editor.tscn`](../../../src/Scenes/Editor/Editor.tscn) and base class in [`src/UI/LnzTextEdit.cs`](../../../src/UI/LnzTextEdit.cs) from `TextEdit` to `CodeEdit` (which inherits directly from `TextEdit` in Godot 4).
   - Enable line numbers (`gutters_draw_line_numbers = true`) and configure a lightweight `CodeHighlighter` for `.lnz` `[Section]` headers and `;` / `#` comments using muted, timeless syntax colors aligned with `editor_theme.tres`.
-- [ ] **Requirement 6 (Clean Modal Dialogs & Tool Popups):**
+- [x] **Requirement 6 (Clean Modal Dialogs & Tool Popups):**
   - Upgrade `ColorPopup` and `HeadMovePopup` from bare `Popup` nodes to `PopupPanel` (or include a themed `PanelContainer` child) so they automatically render with the flat panel background, `1px` border, and padding from `editor_theme.tres`.
   - Add clear field labels/placeholders (`Base Color`, `Outline Color`, `X / Y / Z Offset`) and window titles to `ColorPopup`, `HeadMovePopup`, `RecolorPopup`, `RenameDialog`, and `Popup` (Help window).
 

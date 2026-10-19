@@ -11,6 +11,7 @@ public partial class PetViewContainer : PanelContainer
 	private Node3D? _cube;
 	private SubViewportContainer? _tex;
 	private Window? _popup;
+	private PopupMenu? _toolsMenu;
 
 	private IPetBallNode? _lastSelected;
 	private bool _selectingOn;
@@ -25,6 +26,7 @@ public partial class PetViewContainer : PanelContainer
 		_cube = GetTree().Root.GetNodeOrNull<Node3D>("Root/PetRoot/MeshInstance3D");
 		_tex = GetTree().Root.GetNodeOrNull<SubViewportContainer>("Root/SceneRoot/SubViewportContainer");
 		_popup = GetTree().Root.GetNodeOrNull<Window>("Root/SceneRoot/Popup");
+		_toolsMenu = GetTree().Root.GetNodeOrNull<PopupMenu>("Root/SceneRoot/ToolsMenu");
 
 		OnPetViewContainerResized();
 		if (_tex != null)
@@ -162,6 +164,21 @@ public partial class PetViewContainer : PanelContainer
 	public void OnHelpButtonPressed()
 	{
 		_popup?.PopupCentered();
+	}
+
+	public void OnHelpPopupCloseRequested()
+	{
+		_popup?.Hide();
+	}
+
+	public void OnToolsButtonPressed()
+	{
+		_toolsMenu ??= GetTree().Root.GetNodeOrNull<PopupMenu>("Root/SceneRoot/ToolsMenu");
+		if (_toolsMenu != null)
+		{
+			_toolsMenu.Position = (Vector2I)GetViewport().GetMousePosition();
+			_toolsMenu.Popup();
+		}
 	}
 
 	public void OnLnzTextEditMouseEntered()

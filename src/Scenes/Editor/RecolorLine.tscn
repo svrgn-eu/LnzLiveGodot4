@@ -1,26 +1,20 @@
-[gd_scene format=2]
+[gd_scene format=3 uid="uid://d3k4m5n6p7q8r"]
 
 [node name="HBoxContainer" type="HBoxContainer"]
 offset_right = 361.0
-offset_bottom = 24.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+offset_bottom = 28.0
+theme_override_constants/separation = 8
 
 [node name="LineEdit" type="LineEdit" parent="."]
-offset_right = 170.0
-offset_bottom = 24.0
+layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "From color #"
 
 [node name="Label" type="Label" parent="."]
-offset_left = 174.0
-offset_top = 5.0
-offset_right = 187.0
-offset_bottom = 19.0
-text = "->"
+layout_mode = 2
+text = "→"
 
 [node name="LineEdit2" type="LineEdit" parent="."]
-offset_left = 191.0
-offset_right = 361.0
-offset_bottom = 24.0
+layout_mode = 2
 size_flags_horizontal = 3
+placeholder_text = "To color #"
