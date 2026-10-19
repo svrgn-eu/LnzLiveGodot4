@@ -2,7 +2,12 @@
 
 ![screenshot](screenshot.png)
 
-Interactive desktop 3D previewer and editor for **Petz** `.lnz` files, built with **Godot 4**.
+Interactive desktop 3D previewer and editor for **Petz** `.lnz` files, built with **Godot 4 (.NET / C#)**.
+
+## Requirements
+
+- **Godot Editor**: **Godot 4.7.1 (.NET / Mono Edition)** (`4.7.1-stable-mono`, pinned in [`.fgvm-version`](.fgvm-version)) or newer 4.7.x+ .NET build. *The standard GDScript-only Godot editor is not supported.*
+- **.NET SDK**: **.NET 10 SDK (`net10.0`)** to build [`PetzRendering.csproj`](PetzRendering.csproj).
 
 ## Documentation & Guides
 

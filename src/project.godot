@@ -12,13 +12,13 @@ config_version=5
 
 config/name="PetzRendering"
 config/version="1.0.0"
-run/main_scene="res://scenes/editor/editor.tscn"
-config/features=PackedStringArray("4.8")
+run/main_scene="res://Scenes/Editor/Editor.tscn"
+config/features=PackedStringArray("4.8", "C#")
 config/icon="res://icon.png"
 
 [autoload]
 
-KeyBallsData="*res://data_classes/key_balls_data.gd"
+ServiceBootstrapper="*res://Core/ServiceBootstrapper.cs"
 
 [debug]
 
