@@ -10,6 +10,8 @@ A native desktop fork of [mnemoli/LnzLive](https://github.com/mnemoli/LnzLive) â
 
 **LnzLive** is a native desktop application (`v1.0.0`) built with **Godot 4** designed to parse, preview, animate, and edit **Petz** (`Catz` and `Dogz` by PF.Magic / Studio Mythos) `.lnz` character definition files in real time.
 
+I always was a huge fan of the early Petz games, most likely caused by their unique visual style, and wanted to both understand and learn about it. After various tries using Delphi, Unity and whatnot I am starting this fork from a working example and trying to imply my vision on it.
+
 ### Why LnzLive Exists
 In the original 1990s/2000s *Petz* games, pets are not rendered using traditional 3D polygon meshes. Instead, they use a unique procedural 2.5D/3D rendering technique built from:
 - **Ballz**: Screen-aligned 2D circles positioned in 3D space via skeletal animation frames.
@@ -26,11 +28,12 @@ Historically, "hexers" (Petz modders and breed creators) had to edit `.lnz` text
 4. **Automated Hexing Utilities**: Built-in tools for symmetrical mirroring (**Copy L to R**), batch recoloring (**Color Swap** and body-part recoloring), adding connected addballs, and moving head assemblies.
 5. **Foundation for a Godot 4 Desktop Pet Engine**: By accurately implementing the Petz `.lnz`, `.bhd`, `.bdt`, and palette-indexed `.bmp` rendering pipeline in Godot 4, this project serves both as a standalone editor and as the core rendering engine for a modern Desktop Pet application.
 
-### Key Achievements in This Fork
+### Key Achievements in this fork
 
 - **Desktop-First Application Scope** ([ADR-0001](doc/adr/0001-desktop-application-scope.md)):
-  - Scoped specifically as a standalone native desktop application rather than a browser-based web export, providing unrestricted system clipboard access, local `user://` file storage, and a foundation for desktop pet features.
+  - Scoped specifically as a standalone native desktop application rather than a browser-based web export, providing unrestricted system clipboard access, local `user://` file storage, and a foundation for desktop pet features. Having the original app in a web browser is super, but I am more of a traditionalist and want to leverage all advantages of the desktop as a target platform.
 - **Godot 3 â†’ Godot 4 (.NET / C#) Migration**:
+  - Being an educated C# developer, I know it is not the first choice for Godot development, I like many opportunities and possibilities you have. Plus, it's only a different language to achieve the same goal with ;-)
   - Upgraded project configuration ([`src/project.godot`](src/project.godot), `config_version=5`, `gl_compatibility` renderer) and scene/resource formats (`format=3`).
   - Migrated the entire codebase from GDScript to **C# (.NET 10)** ([`src/PetzRendering.csproj`](src/PetzRendering.csproj)) with a standardized Godot C# folder hierarchy (`Core`, `Services`, `Models`, `Parsers`, `Rendering`, `UI`, `Scenes`) and a service-oriented architecture powered by `Microsoft.Extensions.DependencyInjection` ([`ServiceBootstrapper.cs`](src/Core/ServiceBootstrapper.cs)).
   - Ported custom spatial shaders ([`ball.tres`](src/shaders/ball.tres), [`line.tres`](src/shaders/line.tres), [`paintball.tres`](src/shaders/paintball.tres)) to Godot 4's shader language, including Reverse-Z clip-space depth ordering for lines, `INV_VIEW_MATRIX` billboarding, `ALPHA_SCISSOR_THRESHOLD`, and nearest-neighbor palette/texture sampling.
