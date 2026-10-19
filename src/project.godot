@@ -33,6 +33,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="PetzRendering"
 
+[gui]
+
+theme/custom="res://resources/themes/editor_theme.tres"
+
 [input]
 
 save_file={
