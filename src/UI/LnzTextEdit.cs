@@ -74,8 +74,9 @@ public partial class LnzTextEdit : TextEdit
 
 	public override void _UnhandledKeyInput(InputEvent @event)
 	{
-		if (Input.IsKeyPressed(Key.Ctrl) && @event is InputEventKey { Pressed: true, Keycode: Key.S })
+		if (@event.IsActionPressed(InputActions.SaveFile))
 		{
+			GetViewport().SetInputAsHandled();
 			SaveFile();
 		}
 	}
@@ -1345,8 +1346,9 @@ public partial class LnzTextEdit : TextEdit
 
 	public void OnLnzTextEditGuiInput(InputEvent @event)
 	{
-		if (@event is InputEventKey { Pressed: true, CtrlPressed: true, Keycode: Key.Q })
+		if (@event.IsActionPressed(InputActions.FindBall))
 		{
+			AcceptEvent();
 			var nearestSectionStart = Search("[", (uint)SearchFlags.Backwards, GetCaretLine(), 0);
 			if (nearestSectionStart.Y != -1)
 			{

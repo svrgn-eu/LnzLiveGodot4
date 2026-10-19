@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using PetzRendering.Core;
 using PetzRendering.Models;
 
 namespace PetzRendering.Rendering;
@@ -294,7 +295,16 @@ public partial class Paintball : Node3D, IPetBallNode
 
 	public override void _Input(InputEvent @event)
 	{
-		if (@event is InputEventKey { Pressed: true } && _isOver)
+		if (!_isOver)
+		{
+			return;
+		}
+
+		if (@event.IsActionPressed(InputActions.SelectBallSection, exactMatch: true) ||
+			@event.IsActionPressed(InputActions.SelectMoveSection, exactMatch: true) ||
+			@event.IsActionPressed(InputActions.SelectProjectSection, exactMatch: true) ||
+			@event.IsActionPressed(InputActions.SelectLineSection, exactMatch: true) ||
+			@event.IsActionPressed(InputActions.DeleteBall, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 		}

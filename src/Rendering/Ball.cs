@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using PetzRendering.Core;
 using PetzRendering.Models;
 
 namespace PetzRendering.Rendering;
@@ -298,37 +299,37 @@ public partial class Ball : Node3D, IPetBallNode
 
 	public override void _Input(InputEvent @event)
 	{
-		if (@event is not InputEventKey { Pressed: true } keyEvent || !_isOver)
+		if (!_isOver)
 		{
 			return;
 		}
 
-		if (keyEvent.Keycode == Key.Space && keyEvent.CtrlPressed)
+		if (@event.IsActionPressed(InputActions.OpenToolsMenu))
 		{
 			return;
 		}
 
-		if (keyEvent.Keycode is Key.B or Key.Z)
+		if (@event.IsActionPressed(InputActions.SelectBallSection, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 			EmitSignal(SignalName.BallSelected, BallNo, (int)Section.Ball);
 		}
-		else if (keyEvent.Keycode is Key.M or Key.X)
+		else if (@event.IsActionPressed(InputActions.SelectMoveSection, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 			EmitSignal(SignalName.BallSelected, BallNo, (int)Section.Move);
 		}
-		else if (keyEvent.Keycode is Key.P or Key.C)
+		else if (@event.IsActionPressed(InputActions.SelectProjectSection, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 			EmitSignal(SignalName.BallSelected, BallNo, (int)Section.Project);
 		}
-		else if (keyEvent.Keycode is Key.L or Key.V)
+		else if (@event.IsActionPressed(InputActions.SelectLineSection, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 			EmitSignal(SignalName.BallSelected, BallNo, (int)Section.Line);
 		}
-		else if (keyEvent.Keycode == Key.Delete)
+		else if (@event.IsActionPressed(InputActions.DeleteBall, exactMatch: true))
 		{
 			GetViewport().SetInputAsHandled();
 			EmitSignal(SignalName.BallDeleted, BallNo);

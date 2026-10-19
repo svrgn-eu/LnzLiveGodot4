@@ -1,4 +1,5 @@
 using Godot;
+using PetzRendering.Core;
 
 namespace PetzRendering.UI;
 
@@ -13,8 +14,9 @@ public partial class UnhandledInputHandler : Node
 
 	public override void _UnhandledKeyInput(InputEvent @event)
 	{
-		if (@event is InputEventKey { Pressed: true, CtrlPressed: true, Keycode: Key.Space })
+		if (@event.IsActionPressed(InputActions.OpenToolsMenu))
 		{
+			GetViewport().SetInputAsHandled();
 			ShowPopupMenu();
 		}
 	}

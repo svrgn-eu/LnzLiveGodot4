@@ -25,6 +25,7 @@ public partial class ServiceBootstrapper : Node
 	public override void _EnterTree()
 	{
 		Instance = this;
+		InputActions.EnsureRegistered();
 		_services ??= BuildServiceProvider();
 		var logger = GetService<ILogService>();
 		logger.LogInfo("ServiceBootstrapper initialized dependency injection container.", nameof(ServiceBootstrapper));

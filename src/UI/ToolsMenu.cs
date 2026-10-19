@@ -70,7 +70,7 @@ public partial class ToolsMenu : PopupMenu
 
 	public void OnLineEditGuiInput(InputEvent @event)
 	{
-		if (@event is not InputEventKey { Pressed: true, Keycode: Key.Enter })
+		if (!@event.IsActionPressed(InputActions.UiTextSubmit))
 		{
 			return;
 		}
@@ -246,7 +246,7 @@ public partial class ToolsMenu : PopupMenu
 
 	public void OnHeadMoveLineEditGuiInput(InputEvent @event)
 	{
-		if (@event is not InputEventKey { Pressed: true, Keycode: Key.Enter })
+		if (!@event.IsActionPressed(InputActions.UiTextSubmit))
 		{
 			return;
 		}
