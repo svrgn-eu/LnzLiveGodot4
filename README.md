@@ -1,6 +1,6 @@
 # LnzLive (Godot 4 Desktop Fork)
 
-![LnzLive Screenshot](src/screenshot.png)
+![LnzLive Screenshot](img/Screenshot%202026-10-19%20232722.png)
 
 A native desktop fork of [mnemoli/LnzLive](https://github.com/mnemoli/LnzLive) — an interactive 3D previewer, editor, and rendering engine foundation for **Petz** (`Catz` / `Dogz`) `.lnz` files, migrated from **Godot 3** to **Godot 4**.
 
