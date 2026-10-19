@@ -7,6 +7,6 @@ project_name="PetzRendering"
 
 [editor]
 channel=official
-flavor=gdscript
+flavor=dotnet
 base_version=4.8
 version=4.8-dev7
