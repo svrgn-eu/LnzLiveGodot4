@@ -121,7 +121,7 @@ void fragment() {
 
   vec3 texture_color;
   vec2 center_uv = (center_fragcoord / VIEWPORT_SIZE) - (1.0);
-  int palette_index = int(round(texture(ball_texture, (SCREEN_UV - center_uv) * (1000.0 / texture_size)).r * 255.0));
+  int palette_index = int(round(texture(ball_texture, (SCREEN_UV - center_uv) * (VIEWPORT_SIZE / texture_size)).r * 255.0));
 	if (outline == -3) 
 		ALBEDO = vec3(pct * vec3(1.0) + pct2 * vec3(0.0));
 	else {
@@ -167,9 +167,9 @@ void vertex() {
 	
 	vert_in_clip_space.z = center_clip_space.z;
 	vert_in_clip_space.z += z_add * 0.001;
-	float b = (float(ball_size) / 2.0 + 0.5 + float(fuzz_amount + 3)) / (VIEWPORT_SIZE.x / 2.0);
-	vert_in_clip_space.x = center_clip_space.x + b * sign(vert_in_clip_space.x);
-	vert_in_clip_space.y = center_clip_space.y + b * sign(vert_in_clip_space.y);
+	float b = (float(ball_size) / 2.0 + 0.5 + float(fuzz_amount + 3)) / ((VIEWPORT_SIZE.x / 2.0) * PROJECTION_MATRIX[0][0]);
+	vert_in_clip_space.x = center_clip_space.x + b * sign(VERTEX.x);
+	vert_in_clip_space.y = center_clip_space.y + b * sign(VERTEX.y);
 	
 	VERTEX = vert_in_clip_space;
 }"

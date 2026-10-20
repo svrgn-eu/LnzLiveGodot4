@@ -76,7 +76,7 @@ void fragment() {
 		texture_color = texture(palette, vec2((float(l_color_index) + 0.5) / 256.0, 0.0)).rgb;
 		
 	else {
-		int palette_index = int(round(texture(line_texture, (SCREEN_UV - center_of_line_screen_uv) * (1000.0 / texture_size)).r * 255.0));
+		int palette_index = int(round(texture(line_texture, (SCREEN_UV - center_of_line_screen_uv) * (VIEWPORT_SIZE / texture_size)).r * 255.0));
   if (transparent_index > 0 && color_index < 150 && has_texture) {
 	  // if the index of the texture is the same as the transparent color
 	  // then palette shift	

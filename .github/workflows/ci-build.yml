@@ -61,10 +61,10 @@ jobs:
           fgvm local
           fgvm which
 
-      - name: Validate C# Compilation
+      - name: Validate & Build C# Editor Assembly
         shell: pwsh
         run: |
-          dotnet build src/PetzRendering.csproj --configuration Release
+          dotnet build src/PetzRendering.csproj --configuration Debug
 
       - name: Export Desktop Build via FGVM
         working-directory: src

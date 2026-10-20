@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/LnzTextEdit.cs" id="1"]
 [ext_resource type="Script" path="res://UI/FileTree.cs" id="2"]
-[ext_resource type="Script" path="res://Rendering/DogGenerator.cs" id="3"]
+[ext_resource type="Script" path="res://Rendering/PetGenerator.cs" id="3"]
 [ext_resource type="Script" path="res://UI/PetViewContainer.cs" id="4"]
 [ext_resource type="Script" path="res://UI/FrameSlider.cs" id="5"]
 [ext_resource type="Script" path="res://UI/PlayButton.cs" id="6"]

@@ -10,7 +10,7 @@ using PetzRendering.Services;
 
 namespace PetzRendering.Rendering;
 
-public partial class DogGenerator : Node
+public partial class PetGenerator : Node
 {
 	private sealed class CollatedPetData
 	{
@@ -804,7 +804,7 @@ public partial class DogGenerator : Node
 			if (!_ballMap.TryGetValue(line.Start, out var start) ||
 				!_ballMap.TryGetValue(line.End, out var end))
 			{
-				Logger.LogInfo($"Could not make a line between {line.Start} and {line.End}", nameof(DogGenerator));
+				Logger.LogInfo($"Could not make a line between {line.Start} and {line.End}", nameof(PetGenerator));
 				continue;
 			}
 
@@ -1028,7 +1028,7 @@ public partial class DogGenerator : Node
 			}
 
 			sb.Append(thisBallString);
-			Logger.LogInfo(thisBallString, nameof(DogGenerator));
+			Logger.LogInfo(thisBallString, nameof(PetGenerator));
 		}
 
 		DisplayServer.ClipboardSet(sb.ToString());

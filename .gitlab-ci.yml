@@ -55,7 +55,7 @@ validate:dotnet:
   script:
     - cd src
     - fgvm local
-    - dotnet build PetzRendering.csproj --configuration Release
+    - dotnet build PetzRendering.csproj --configuration Debug
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -70,6 +70,7 @@ build:windows:
     - New-Item -ItemType Directory -Path "build/windows" -Force | Out-Null
     - cd src
     - fgvm local
+    - dotnet build PetzRendering.csproj --configuration Debug
     - fgvm export
     - cd ..
     - Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
