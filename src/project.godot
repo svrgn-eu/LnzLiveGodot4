@@ -13,7 +13,7 @@ config_version=5
 config/name="PetzRendering"
 config/version="1.0.0"
 run/main_scene="res://Scenes/Editor/Editor.tscn"
-config/features=PackedStringArray("4.7", "C#")
+config/features=PackedStringArray("4.8", "C#")
 config/icon="res://icon.png"
 
 [autoload]
