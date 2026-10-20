@@ -1,0 +1,95 @@
+name: CI/CD Build & Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+      - "[0-9]+.[0-9]+*"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  FGVM_VERSION: "v2.6.0"
+
+jobs:
+  build-windows:
+    name: Build & Export (Windows Desktop)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache FGVM Godot Editor & Export Templates
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/fgvm
+            ~/AppData/Local/fgvm
+            ~/AppData/Roaming/Godot/export_templates
+          key: fgvm-${{ runner.os }}-${{ hashFiles('src/.fgvm-version') }}
+
+      - name: Install FGVM
+        shell: pwsh
+        run: |
+          $fgvmDir = Join-Path $env:RUNNER_TEMP "fgvm-bin"
+          New-Item -ItemType Directory -Path $fgvmDir -Force | Out-Null
+          $zipPath = Join-Path $fgvmDir "fgvm-win-x64.zip"
+          Invoke-WebRequest -Uri "https://github.com/patricktcoakley/fgvm/releases/download/$env:FGVM_VERSION/fgvm-win-x64.zip" -OutFile $zipPath
+          Expand-Archive -Path $zipPath -DestinationPath $fgvmDir -Force
+          Remove-Item $zipPath -Force
+          Add-Content -Path $env:GITHUB_PATH -Value $fgvmDir
+
+      - name: Provision Godot Editor & Export Templates via FGVM
+        working-directory: src
+        shell: pwsh
+        run: |
+          fgvm --version
+          fgvm local
+          fgvm which
+
+      - name: Validate C# Compilation
+        shell: pwsh
+        run: |
+          dotnet build src/PetzRendering.csproj --configuration Release
+
+      - name: Export Desktop Build via FGVM
+        working-directory: src
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "../build/windows" -Force | Out-Null
+          fgvm export
+
+      - name: Package Windows Desktop Artifact Archive
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
+
+      - name: Upload Desktop Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LnzLive-Windows-x64
+          path: |
+            build/windows/
+            build/LnzLive-Windows-x64.zip
+          if-no-files-found: error
+
+      - name: Publish GitHub Release on Tag Push
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/LnzLive-Windows-x64.zip
+          generate_release_notes: true

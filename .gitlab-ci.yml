@@ -1,0 +1,104 @@
+stages:
+  - prepare
+  - validate
+  - build
+  - release
+
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_PACKAGES: "$CI_PROJECT_DIR/.nuget/packages"
+  FGVM_VERSION: "v2.6.0"
+  FGVM_ROOT: "$CI_PROJECT_DIR/.fgvm"
+
+cache:
+  key:
+    files:
+      - src/.fgvm-version
+  paths:
+    - .fgvm/
+    - .nuget/packages/
+
+.setup_fgvm_windows: &setup_fgvm_windows
+  - |
+    $fgvmBin = Join-Path $env:CI_PROJECT_DIR ".fgvm/bin"
+    New-Item -ItemType Directory -Path $fgvmBin -Force | Out-Null
+    $fgvmExe = Join-Path $fgvmBin "fgvm.exe"
+    if (-not (Test-Path $fgvmExe)) {
+      $zipPath = Join-Path $fgvmBin "fgvm-win-x64.zip"
+      Invoke-WebRequest -Uri "https://github.com/patricktcoakley/fgvm/releases/download/$env:FGVM_VERSION/fgvm-win-x64.zip" -OutFile $zipPath
+      Expand-Archive -Path $zipPath -DestinationPath $fgvmBin -Force
+      Remove-Item $zipPath -Force
+    }
+    $env:PATH = "$fgvmBin;$env:PATH"
+    fgvm --version
+
+prepare:fgvm:
+  stage: prepare
+  tags:
+    - windows
+  before_script: *setup_fgvm_windows
+  script:
+    - cd src
+    - fgvm local
+    - fgvm which
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+validate:dotnet:
+  stage: validate
+  tags:
+    - windows
+  before_script: *setup_fgvm_windows
+  script:
+    - cd src
+    - fgvm local
+    - dotnet build PetzRendering.csproj --configuration Release
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+build:windows:
+  stage: build
+  tags:
+    - windows
+  before_script: *setup_fgvm_windows
+  script:
+    - New-Item -ItemType Directory -Path "build/windows" -Force | Out-Null
+    - cd src
+    - fgvm local
+    - fgvm export
+    - cd ..
+    - Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
+  artifacts:
+    name: "LnzLive-Windows-x64-$CI_COMMIT_REF_SLUG"
+    paths:
+      - build/windows/
+      - build/LnzLive-Windows-x64.zip
+    expire_in: 1 week
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+release:package:
+  stage: release
+  tags:
+    - windows
+  needs:
+    - job: build:windows
+      artifacts: true
+  script:
+    - Write-Host "Publishing release artifact for tag $CI_COMMIT_TAG"
+    - Test-Path "build/LnzLive-Windows-x64.zip"
+  artifacts:
+    name: "LnzLive-Windows-x64-$CI_COMMIT_TAG"
+    paths:
+      - build/windows/
+      - build/LnzLive-Windows-x64.zip
+    expire_in: never
+  rules:
+    - if: $CI_COMMIT_TAG

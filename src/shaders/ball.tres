@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://0x4gx172o7ei"]
 
-[ext_resource type="Texture2D" uid="uid://fqbfs4kuhq2m" path="res://resources/textures/petzpalette.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://fqbfs4kuhq2m" path="res://resources/palettes/petzpalette.png" id="1"]
 
 [sub_resource type="Shader" id="1"]
 code = "shader_type spatial;

@@ -1,4 +1,4 @@
 [gd_resource type="FontFile" format=2]
 
 [resource]
-font_path = "res://resources/DroidSans.ttf"
+font_path = "res://resources/fonts/DroidSans.ttf"

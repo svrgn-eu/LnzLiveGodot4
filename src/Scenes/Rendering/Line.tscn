@@ -1,16 +1,15 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene format=3 uid="uid://d4e5f6g7h8j9k"]
 
-[ext_resource path="res://shaders/line.tres" type="Material" id=1]
-[ext_resource path="res://Rendering/Line.cs" type="Script" id=2]
+[ext_resource type="Material" uid="uid://cxbkc1uh0px2q" path="res://shaders/line.tres" id="1"]
+[ext_resource type="Script" uid="uid://bktl78ytijtm4" path="res://Rendering/Line.cs" id="2"]
 
-[sub_resource type="QuadMesh" id=1]
-size = Vector2( 0.001, 1 )
+[sub_resource type="QuadMesh" id="1"]
+size = Vector2(0.001, 1)
 
 [node name="Line" type="Node3D"]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.001 )
-material_override = ExtResource( 1 )
-mesh = SubResource( 1 )
-material/0 = null
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.001)
+material_override = ExtResource("1")
+mesh = SubResource("1")

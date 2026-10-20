@@ -128,7 +128,7 @@ public partial class LnzTextEdit : CodeEdit
 		}
 		else
 		{
-			var possibleFileName = Filepath.Replace("res://", "user://", StringComparison.Ordinal);
+			var possibleFileName = "user://resources/" + Filepath.GetFile();
 			if (FileAccess.FileExists(possibleFileName))
 			{
 				var unixTime = (long)Time.GetUnixTimeFromSystem();

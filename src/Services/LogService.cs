@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using Godot;
 using log4net;
 using log4net.Appender;
@@ -58,6 +59,19 @@ public class LogService : ILogService
 		if (File.Exists(configPath))
 		{
 			XmlConfigurator.Configure(repository, new FileInfo(configPath));
+		}
+		else if (Godot.FileAccess.FileExists("res://log4net.config"))
+		{
+			using var configFile = Godot.FileAccess.Open("res://log4net.config", Godot.FileAccess.ModeFlags.Read);
+			if (configFile != null)
+			{
+				using var stream = new MemoryStream(Encoding.UTF8.GetBytes(configFile.GetAsText()));
+				XmlConfigurator.Configure(repository, stream);
+			}
+			else
+			{
+				BasicConfigurator.Configure(repository);
+			}
 		}
 		else
 		{

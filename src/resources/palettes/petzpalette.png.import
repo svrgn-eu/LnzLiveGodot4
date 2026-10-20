@@ -2,22 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfdpchos4mxsb"
-path="res://.godot/imported/favicon.png-80d19ea9a443d34be4d74a9316cc8177.ctex"
+uid="uid://fqbfs4kuhq2m"
+path="res://.godot/imported/petzpalette.png-e27f4b01cd83dfa8c3a65c67e0c7a5a4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://export/favicon.png"
-dest_files=["res://.godot/imported/favicon.png-80d19ea9a443d34be4d74a9316cc8177.ctex"]
+source_file="res://resources/palettes/petzpalette.png"
+dest_files=["res://.godot/imported/petzpalette.png-e27f4b01cd83dfa8c3a65c67e0c7a5a4.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
@@ -26,8 +25,6 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=false
 mipmaps/limit=-1
-mipmaps/preserve_alpha_test_coverage=false
-mipmaps/alpha_test_threshold=0.5
 roughness/mode=0
 roughness/src_normal=""
 process/channel_remap/red=0
@@ -40,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

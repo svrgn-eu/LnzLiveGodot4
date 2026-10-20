@@ -1,0 +1,3 @@
+# Desktop build artifacts
+build/
+src/.fgvm-export.json

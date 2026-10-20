@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://c8m3n4p5q6r7s"]
 
-[ext_resource type="FontFile" path="res://new_dynamicfontdata.tres" id="1"]
+[ext_resource type="FontFile" path="res://resources/fonts/droid_sans_font.tres" id="1"]
 
 [sub_resource type="StyleBoxEmpty" id="style_empty"]
 

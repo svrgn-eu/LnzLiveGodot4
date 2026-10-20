@@ -13,7 +13,7 @@ config_version=5
 config/name="PetzRendering"
 config/version="1.0.0"
 run/main_scene="res://Scenes/Editor/Editor.tscn"
-config/features=PackedStringArray("4.8", "C#")
+config/features=PackedStringArray("4.7", "C#")
 config/icon="res://icon.png"
 
 [autoload]
@@ -285,4 +285,4 @@ delete_ball={
 
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
-environment/defaults/default_environment="res://default_env.tres"
+environment/defaults/default_environment="res://resources/environment/default_env.tres"

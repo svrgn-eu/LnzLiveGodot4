@@ -73,13 +73,14 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 - **Feature Specifications (`doc/features/`)**:
   - Implemented:
     - [Animation Selection Dropdown](doc/features/implemented/Animation-Selection-Dropdown.md)
+    - [GDScript to C# (.NET) Migration](doc/features/implemented/GDScript-to-CSharp-Migration.md)
+    - [Log4Net Logging Service](doc/features/implemented/Log4Net-Logging-Service.md)
+    - [Modern UI Overhaul & Theme System](doc/features/implemented/Modern-UI-Overhaul-and-Theme-System.md)
   - Ongoing:
-    - [GDScript to C# (.NET) Migration](doc/features/ongoing/GDScript-to-CSharp-Migration.md)
+    - [CI/CD Pipelines (GitHub Actions & GitLab CI) with FGVM](doc/features/ongoing/CI-CD-GitHub-Actions-and-GitLab-Pipelines.md)
+    - [Godot Project Directory Reorganization & Standardization](doc/features/ongoing/Godot-Project-Directory-Reorganization.md)
   - In Review:
     - [Animation Linked Lists & Sequencer Window](doc/features/review/Animation-Linked-Lists-and-Sequencer.md)
-    - [CI/CD Pipelines (GitHub Actions & GitLab CI) with FGVM](doc/features/review/CI-CD-GitHub-Actions-and-GitLab-Pipelines.md)
-    - [Godot Project Directory Reorganization & Standardization](doc/features/review/Godot-Project-Directory-Reorganization.md)
-    - [Modern UI Overhaul & Theme System](doc/features/review/Modern-UI-Overhaul-and-Theme-System.md)
   - [Feature Template (`doc/features/_Feature_Template.md`)](doc/features/_Feature_Template.md)
 - **Bug Reports (`doc/bugs/`)**:
   - [Bug Report Template (`doc/bugs/_Bug_Template.md`)](doc/bugs/_Bug_Template.md)
@@ -89,8 +90,13 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 ## Project Structure
 
 ```text
+├── .github/workflows/
+│   └── ci-build.yml                      # GitHub Actions CI/CD build & release pipeline (FGVM)
+├── .gitlab-ci.yml                        # GitLab CI/CD build & release pipeline (FGVM)
+├── build/                                # Desktop export output directory (gitignored)
 ├── doc/                                  # Project documentation, format specs, ADRs, and features
 │   ├── Architecture-and-Rendering.md     # 7-stage generation pipeline & shader documentation
+│   ├── GUIDE.md                          # User guide for editor controls and hexing tools
 │   ├── adr/                              # Architecture Decision Records
 │   │   ├── _ADR_Template.md
 │   │   └── 0001-desktop-application-scope.md
@@ -101,14 +107,15 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 │   │   ├── _Feature_Template.md
 │   │   ├── discarded/
 │   │   ├── implemented/
-│   │   │   └── Animation-Selection-Dropdown.md
-│   │   ├── ongoing/
-│   │   │   └── GDScript-to-CSharp-Migration.md
-│   │   ├── review/
-│   │   │   ├── Animation-Linked-Lists-and-Sequencer.md
-│   │   │   ├── CI-CD-GitHub-Actions-and-GitLab-Pipelines.md
-│   │   │   ├── Godot-Project-Directory-Reorganization.md
+│   │   │   ├── Animation-Selection-Dropdown.md
+│   │   │   ├── GDScript-to-CSharp-Migration.md
+│   │   │   ├── Log4Net-Logging-Service.md
 │   │   │   └── Modern-UI-Overhaul-and-Theme-System.md
+│   │   ├── ongoing/
+│   │   │   ├── CI-CD-GitHub-Actions-and-GitLab-Pipelines.md
+│   │   │   └── Godot-Project-Directory-Reorganization.md
+│   │   ├── review/
+│   │   │   └── Animation-Linked-Lists-and-Sequencer.md
 │   │   └── reviewed/
 │   └── formats/                          # Detailed Petz file format specifications & references
 │       ├── BHD-and-BDT-Formats.md
@@ -118,21 +125,29 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 │       ├── Palettes-and-BMP-Textures.md
 │       ├── Petz-Color-Palette.md
 │       └── Petz_Workshop_Color_Chart.png
+├── img/                                  # Repository screenshots and documentation media
 ├── src/                                  # Godot 4 .NET project root (v1.0.0)
-│   ├── Core/                             # ServiceBootstrapper Autoload (Microsoft.Extensions.DependencyInjection)
-│   ├── Services/                         # LogService, SettingsService, FeatureService, KeyBallsService
+│   ├── Core/                             # ServiceBootstrapper Autoload & InputActions
+│   ├── Services/                         # LogService, GodotAppender, SettingsService, FeatureService, KeyBallsService
 │   ├── Models/                           # Strongly-typed data models (BallData, AddBallData, LineData, PaintballData, Section)
 │   ├── Parsers/                          # Binary & text parsers (BhdParser, BdtParser, LnzParser, PetzTextureLoader)
 │   ├── Rendering/                        # 3D pet generator & primitive controllers (DogGenerator, Ball, Line, Paintball, Rotator)
 │   ├── UI/                               # Editor UI controllers (LnzTextEdit, FileTree, PetViewContainer, ToolsMenu, AnimPicker, etc.)
 │   ├── Scenes/                           # Godot scenes (Scenes/Editor/Editor.tscn, RecolorLine.tscn, Scenes/Rendering/*.tscn)
-│   ├── resources/                        # Example .lnz pets, .bhd/.bdt animations, palettes, and .bmp textures
+│   ├── resources/                        # Structured static assets
+│   │   ├── animations/                   # Binary skeletal animations (CAT.bhd, DOG.bhd, CAT*.bdt, DOG*.bdt)
+│   │   ├── environment/                  # Default 3D environment (default_env.tres)
+│   │   ├── examples/                     # Bundled example .lnz pet files
+│   │   ├── fonts/                        # UI fonts (DroidSans.ttf, droid_sans_font.tres)
+│   │   ├── palettes/                     # Master 256-color palette (petzpalette.png)
+│   │   ├── textures/                     # Bundled 8-bit indexed .bmp fur/clothing textures
+│   │   └── themes/                       # Declarative Godot 4 UI theme (editor_theme.tres)
 │   ├── shaders/                          # Custom spatial shaders (ball.tres, line.tres, paintball.tres)
 │   ├── .fgvm-version                     # Pinned FGVM Godot version (4.7.1-stable-mono)
+│   ├── export_presets.cfg                # Desktop export preset configuration (Windows Desktop)
+│   ├── log4net.config                    # Apache log4net appender & rolling file configuration
 │   ├── PetzRendering.csproj              # C# project targeting .NET 10 and Godot.NET.Sdk 4.7.1
 │   ├── PetzRendering.sln                 # Visual Studio / .NET solution file
-│   ├── GUIDE.md                          # User guide for editor controls and hexing tools
-│   ├── README.md                         # Godot project directory README
 │   └── project.godot                     # Godot 4 engine configuration
 └── README.md                             # Project root README & documentation index
 ```
@@ -162,7 +177,7 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 
 ## Usage & Controls
 
-For full user instructions on editing `.lnz` files, keyboard shortcuts, local user storage (`%APPDATA%/Godot/app_userdata/PetzRendering`), and built-in hexing tools (Add Ball, Color Swap, Copy L to R, Move Head, etc.), see the [**Usage Guide (`src/GUIDE.md`)**](src/GUIDE.md).
+For full user instructions on editing `.lnz` files, keyboard shortcuts, local user storage (`%APPDATA%/Godot/app_userdata/PetzRendering`), and built-in hexing tools (Add Ball, Color Swap, Copy L to R, Move Head, etc.), see the [**Usage Guide (`doc/GUIDE.md`)**](doc/GUIDE.md).
 
 ### Quick Controls
 - **Select Pet**: Double-click an entry under **Examples** or **Local Storage** in the left panel

@@ -4,7 +4,7 @@ namespace PetzRendering.Rendering;
 
 public partial class Line : Node3D
 {
-	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/textures/petzpalette.png");
+	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/palettes/petzpalette.png");
 
 	private Vector2 _lineWidths = new(10, 10);
 	private int _fuzzAmount;

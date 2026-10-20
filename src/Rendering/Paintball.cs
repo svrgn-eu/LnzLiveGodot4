@@ -7,7 +7,7 @@ namespace PetzRendering.Rendering;
 
 public partial class Paintball : Node3D, IPetBallNode
 {
-	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/textures/petzpalette.png");
+	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/palettes/petzpalette.png");
 
 	private Vector3 _baseBallPosition = Vector3.Zero;
 	private int _baseBallSize = 10;

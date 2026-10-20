@@ -15,14 +15,14 @@ Establish automated Continuous Integration and Continuous Delivery (CI/CD) pipel
 - **End Users / Testers:** Download ready-to-run desktop build artifacts directly from CI runs or Releases without needing to install Godot 4 locally.
 
 ## ⚙️ Functional Requirements
-- [ ] **Requirement 1 (FGVM Version Pinning):** Maintain `src/.fgvm-version` in the Godot project root so `fgvm local` and `fgvm export` resolve the exact Godot version (`4.7.1-stable-mono`) and matching export templates in headless CI environments.
-- [ ] **Requirement 2 (Export Presets Configuration):** Add a version-controlled `src/export_presets.cfg` defining the target desktop export preset(s) (e.g., `Windows Desktop` runnable executable + `.pck` into `build/windows/`) and ensure `src/.gitignore` allows tracking `export_presets.cfg` if required by `fgvm export`.
-- [ ] **Requirement 3 (GitHub Actions Workflow):** Create `.github/workflows/ci-build.yml` triggered on `push` (`main` and tags) and `pull_request`:
+- [x] **Requirement 1 (FGVM Version Pinning):** Maintain `src/.fgvm-version` in the Godot project root so `fgvm local` and `fgvm export` resolve the exact Godot version (`4.7.1-stable-mono`) and matching export templates in headless CI environments.
+- [x] **Requirement 2 (Export Presets Configuration):** Add a version-controlled `src/export_presets.cfg` defining the target desktop export preset(s) (e.g., `Windows Desktop` runnable executable + `.pck` into `build/windows/`) and ensure `src/.gitignore` allows tracking `export_presets.cfg` if required by `fgvm export`.
+- [x] **Requirement 3 (GitHub Actions Workflow):** Create `.github/workflows/ci-build.yml` triggered on `push` (`main` and tags) and `pull_request`:
   - Install .NET SDK and `fgvm`.
   - Run `fgvm local` in `src/` to install the Godot version and export templates specified by `src/.fgvm-version` (with caching for `~/.local/share/fgvm` or `%LOCALAPPDATA%/fgvm`).
   - Run `fgvm export` in `src/` to build all configured desktop presets.
   - Upload the exported desktop build as a GitHub Actions workflow artifact (and attach to a GitHub Release on tag pushes).
-- [ ] **Requirement 4 (GitLab CI/CD Pipeline):** Create `.gitlab-ci.yml` in the repository root with `prepare`, `build`, and `release` stages:
+- [x] **Requirement 4 (GitLab CI/CD Pipeline):** Create `.gitlab-ci.yml` in the repository root with `prepare`, `build`, and `release` stages:
   - Cache the `fgvm` installation/template directory across pipeline runs.
   - Execute `fgvm local` and `fgvm export` inside `src/`.
   - Publish the exported build directory as GitLab job `artifacts` with expiration policies for branch builds and permanent retention for tagged releases.

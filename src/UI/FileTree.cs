@@ -16,7 +16,7 @@ public partial class FileTree : Tree
 	public delegate void BackupFileEventHandler();
 
 	[Export]
-	public string ExampleFileLocation { get; set; } = "res://resources/";
+	public string ExampleFileLocation { get; set; } = "res://resources/examples/";
 
 	[Export]
 	public string UserFileLocation { get; set; } = "user://resources/";

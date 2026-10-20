@@ -31,7 +31,7 @@ public interface IPetBallNode
 
 public partial class Ball : Node3D, IPetBallNode
 {
-	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/textures/petzpalette.png");
+	private static readonly Texture2D PaletteTexture = GD.Load<Texture2D>("res://resources/palettes/petzpalette.png");
 
 	private int _ballSize = 10;
 	private int _fuzzAmount;

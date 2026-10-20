@@ -34,11 +34,11 @@ Currently, the `src/` directory exhibits several structural issues inherited fro
 ---
 
 ## ⚙️ Functional Requirements
-- [ ] **Requirement 1 (Purge / Relocate Non-Project Artifacts from `src/`):**
+- [x] **Requirement 1 (Purge / Relocate Non-Project Artifacts from `src/`):**
   - Delete the obsolete Godot 3 HTML5 export directory `src/export/` (superseded by native desktop builds per [ADR-0001](../../adr/0001-desktop-application-scope.md)) and remove `src/engine/godot.zip` (managed via `.fgvm-version` and FGVM).
   - Move `src/screenshot.png` to the top-level repository [`img/`](../../../img/) directory (and delete `src/screenshot.png.import`), updating `README.md` image links accordingly.
   - Delete the unused legacy script [`src/scripts/TextEdit.gd`](../../../src/scripts/TextEdit.gd) (and `TextEdit.gd.uid`).
-- [ ] **Requirement 2 (Standardize Directory Hierarchy under `src/`):**
+- [x] **Requirement 2 (Standardize Directory Hierarchy under `src/`):**
   - Organize `src/` into clear, domain-driven top-level directories following Godot 4 best practices:
     - `src/autoload/` (or `src/core/`): Global autoload singletons (`key_balls_data.gd`).
     - `src/models/`: Pure data structures and enums (`ball_data.gd`, `addball_data.gd`, `line_data.gd`, `paintball_data.gd`, `section_enum.gd`).
@@ -46,16 +46,16 @@ Currently, the `src/` directory exhibits several structural issues inherited fro
     - `src/pet_renderer/` (or `src/scenes/pet/`): Co-located 3D pet generator, primitive scenes, controllers, and shaders (`dog_generator.gd`, `ball.tscn` + `ball.gd`, `line.tscn` + `line.gd`, `paintball.tscn` + `paintball.gd`, `rotator.gd`, and `shaders/`).
     - `src/editor/` (or `src/scenes/editor/`): Co-located main editor scene, UI sub-scenes (`recolor_line.tscn`), and UI controller scripts.
     - `src/assets/` (or `src/resources/`): Structured static assets divided into `examples/` (`.lnz`), `animations/` (`.bhd`/`.bdt`), `textures/` (`.bmp`), `palettes/` (`petzpalette.png`), `fonts/` (`DroidSans.ttf`, `droid_sans_font.tres`), and `environment/` (`default_env.tres`).
-- [ ] **Requirement 3 (Standardize File Naming to `snake_case`):**
+- [x] **Requirement 3 (Standardize File Naming to `snake_case`):**
   - Rename all `.tscn`, `.gd`, and `.tres` files to `snake_case` per the official Godot style guide (e.g., `Ball.tscn` $\rightarrow$ `ball.tscn`, `AnimPicker.gd` $\rightarrow$ `anim_picker.gd`, `new_dynamicfontdata.tres` $\rightarrow$ `droid_sans_font.tres`).
   - *Note on C# Migration Alignment:* If this reorganization is executed immediately prior to or as part of [`GDScript-to-CSharp-Migration.md`](GDScript-to-CSharp-Migration.md), scripts and scenes can instead adopt the C# `PascalCase` convention specified in that feature document. Both options are detailed in the **Technical Details** section below.
-- [ ] **Requirement 4 (Upgrade Legacy Scene Formats):**
+- [x] **Requirement 4 (Upgrade Legacy Scene Formats):**
   - Re-save `ball.tscn`, `line.tscn`, `paintball.tscn`, and `recolor_line.tscn` in Godot 4 `[gd_scene format=3]` format with valid `uid://` identifiers.
-- [ ] **Requirement 5 (Update All Resource & Runtime Directory Paths):**
+- [x] **Requirement 5 (Update All Resource & Runtime Directory Paths):**
   - Update `run/main_scene`, `KeyBallsData` autoload, and `default_environment` paths in [`src/project.godot`](../../../src/project.godot).
   - Update all `ExtResource` paths in `.tscn` and `.tres` files.
   - Update all `preload()` and `DirAccess` / `FileAccess` paths in scripts (`dog_generator.gd`, `file_tree.gd`, `bhd_parser.gd`, `bdt_parser.gd`, `petz_texture_loader.gd`).
-- [ ] **Requirement 6 (Export & Ignore Hygiene):**
+- [x] **Requirement 6 (Export & Ignore Hygiene):**
   - Ensure desktop build outputs target a directory outside `src/` (e.g., `build/` at the repository root, or `src/build/` containing a `.gdignore` file so Godot never imports compiled executables or `.pck` archives).
 
 ---
