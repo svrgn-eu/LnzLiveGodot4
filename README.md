@@ -84,6 +84,8 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
   - [Feature Template (`doc/features/_Feature_Template.md`)](doc/features/_Feature_Template.md)
 - **Bug Reports (`doc/bugs/`)**:
   - [Bug Report Template (`doc/bugs/_Bug_Template.md`)](doc/bugs/_Bug_Template.md)
+- **Release & Operations Manuals**:
+  - [GitHub Release Manual (`doc/99 Github Release.md`)](doc/99%20Github%20Release.md)
 
 ---
 
@@ -95,6 +97,7 @@ Comprehensive documentation on the program's internal architecture, 3D rendering
 ├── .gitlab-ci.yml                        # GitLab CI/CD build & release pipeline (FGVM)
 ├── build/                                # Desktop export output directory (gitignored)
 ├── doc/                                  # Project documentation, format specs, ADRs, and features
+│   ├── 99 Github Release.md              # Manual for creating and publishing GitHub Releases
 │   ├── Architecture-and-Rendering.md     # 7-stage generation pipeline & shader documentation
 │   ├── GUIDE.md                          # User guide for editor controls and hexing tools
 │   ├── adr/                              # Architecture Decision Records

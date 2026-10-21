@@ -73,19 +73,18 @@ jobs:
           New-Item -ItemType Directory -Path "../build/windows" -Force | Out-Null
           fgvm export
 
-      - name: Package Windows Desktop Artifact Archive
-        shell: pwsh
-        run: |
-          Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
-
       - name: Upload Desktop Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: LnzLive-Windows-x64
-          path: |
-            build/windows/
-            build/LnzLive-Windows-x64.zip
+          path: build/windows/
           if-no-files-found: error
+
+      - name: Package Windows Desktop Release Archive
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
 
       - name: Publish GitHub Release on Tag Push
         if: startsWith(github.ref, 'refs/tags/')

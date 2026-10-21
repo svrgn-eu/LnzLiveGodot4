@@ -73,12 +73,10 @@ build:windows:
     - dotnet build PetzRendering.csproj --configuration Debug
     - fgvm export
     - cd ..
-    - Compress-Archive -Path "build/windows/*" -DestinationPath "build/LnzLive-Windows-x64.zip" -Force
   artifacts:
     name: "LnzLive-Windows-x64-$CI_COMMIT_REF_SLUG"
     paths:
       - build/windows/
-      - build/LnzLive-Windows-x64.zip
     expire_in: 1 week
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -94,12 +92,11 @@ release:package:
       artifacts: true
   script:
     - Write-Host "Publishing release artifact for tag $CI_COMMIT_TAG"
-    - Test-Path "build/LnzLive-Windows-x64.zip"
+    - Test-Path "build/windows/PetzRendering.exe"
   artifacts:
     name: "LnzLive-Windows-x64-$CI_COMMIT_TAG"
     paths:
       - build/windows/
-      - build/LnzLive-Windows-x64.zip
     expire_in: never
   rules:
     - if: $CI_COMMIT_TAG
